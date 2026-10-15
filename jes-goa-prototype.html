@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JES Goa Chapter — Prototype</title>
+<meta name="description" content="Jain Engineers Society Goa Chapter — National Convention, JES Premier League and community portal. Prototype with sample data.">
+<style>
+:root{
+  --navy:#14213d;--navy-2:#1d2e52;--ivory:#fbf8f1;--paper:#ffffff;--ink:#1b2333;
+  --muted:#5d6678;--line:#e4dccb;--gold:#b8924a;--gold-2:#d9b774;--ok:#2e7d4f;--warn:#b26a00;--bad:#b3261e;
+  --radius:10px;--shadow:0 1px 2px rgba(20,33,61,.06),0 4px 14px rgba(20,33,61,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,Manrope,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--ivory);line-height:1.55;font-size:16px}
+a{color:var(--navy)}
+img{max-width:100%;display:block}
+h1,h2,h3,h4{font-family:inherit;color:var(--navy);line-height:1.25;margin:0 0 .5em}
+h1{font-size:clamp(1.9rem,4vw,3rem);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(1.4rem,2.6vw,2rem);font-weight:650}
+h3{font-size:1.15rem;font-weight:620}
+p{margin:0 0 1em}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.section{padding:64px 0}
+.section.alt{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.eyebrow{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:650;margin-bottom:.6em}
+.lede{color:var(--muted);font-size:1.05rem;max-width:62ch}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4em;padding:.7em 1.2em;border-radius:8px;border:1px solid transparent;font:inherit;font-weight:600;font-size:.95rem;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s,color .15s;white-space:nowrap}
+.btn-primary{background:var(--navy);color:#fff}
+.btn-primary:hover{background:var(--navy-2)}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#a17f3d}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--navy)}
+.btn-ghost:hover{border-color:var(--navy)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-sm{padding:.45em .85em;font-size:.85rem}
+.btn-danger{background:transparent;border-color:#e7c2be;color:var(--bad)}
+:focus-visible{outline:3px solid var(--gold-2);outline-offset:2px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}.section{padding:44px 0}}
+.badge{display:inline-block;padding:.2em .6em;border-radius:999px;font-size:.75rem;font-weight:650;background:#efe7d4;color:#6b5121;border:1px solid #e6d7b3}
+.badge.navy{background:#e7ebf4;color:var(--navy);border-color:#cfd7e8}
+.badge.ok{background:#e6f3ea;color:var(--ok);border-color:#c5e3cf}
+.badge.warn{background:#fdf1dc;color:var(--warn);border-color:#f2d9a8}
+.badge.bad{background:#fbe7e5;color:var(--bad);border-color:#efc5c1}
+.demo-tag{display:inline-block;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#7a5b1e;background:#fdf6e6;border:1px dashed #d9b774;padding:.15em .5em;border-radius:4px;margin-left:.4em;vertical-align:middle}
+.notice{border:1px solid #e6d7b3;background:#fdf8ec;color:#5b4416;border-radius:8px;padding:12px 14px;font-size:.92rem;margin:0 0 18px}
+.notice strong{color:#4a3510}
+
+/* header */
+.topbar{background:var(--navy);color:#dfe5f1;font-size:.82rem}
+.topbar .wrap{display:flex;justify-content:space-between;gap:12px;padding-top:7px;padding-bottom:7px;flex-wrap:wrap}
+.topbar a{color:#dfe5f1;text-decoration:none}
+.site-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.site-header .wrap{display:flex;align-items:center;justify-content:space-between;height:72px;gap:16px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--navy)}
+.logo-ph{width:44px;height:44px;border-radius:50%;border:2px solid var(--gold);display:grid;place-items:center;font-weight:800;color:var(--navy);font-size:.8rem;letter-spacing:.02em;background:var(--ivory)}
+.brand-text strong{display:block;font-size:1rem;line-height:1.1}
+.brand-text span{font-size:.75rem;color:var(--muted);letter-spacing:.04em}
+.nav{display:flex;align-items:center;gap:4px}
+.nav a{padding:.5em .7em;border-radius:6px;color:var(--ink);text-decoration:none;font-size:.92rem;font-weight:500}
+.nav a:hover{background:#f1ecdf}
+.nav a.active{color:var(--navy);box-shadow:inset 0 -2px 0 var(--gold)}
+.nav-cta{margin-left:8px}
+.menu-btn{display:none;background:none;border:1px solid var(--line);border-radius:8px;padding:.45em .7em;font:inherit;cursor:pointer;color:var(--navy)}
+@media(max-width:1020px){
+  .nav{position:absolute;top:72px;left:0;right:0;background:#fff;flex-direction:column;align-items:stretch;padding:10px 20px 18px;border-bottom:1px solid var(--line);display:none;box-shadow:0 10px 20px rgba(0,0,0,.06)}
+  .nav.open{display:flex}
+  .nav a{padding:.8em .6em}
+  .nav-cta{margin:8px 0 0}
+  .menu-btn{display:inline-block}
+  .site-header{position:sticky}
+  .site-header .wrap{position:relative}
+}
+
+/* hero */
+.hero{position:relative;color:#fff;background:
+  radial-gradient(900px 400px at 85% -10%,rgba(217,183,116,.25),transparent 60%),
+  linear-gradient(160deg,#0f1a33 0%,#1d2e52 60%,#25396a 100%);overflow:hidden}
+.hero .wrap{padding-top:80px;padding-bottom:110px;position:relative;z-index:2}
+.hero h1{color:#fff;max-width:20ch}
+.hero p{color:#c9d2e6;max-width:58ch;font-size:1.08rem}
+.hero .eyebrow{color:var(--gold-2)}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.hero .btn-ghost{color:#fff;border-color:rgba(255,255,255,.35)}
+.hero .btn-ghost:hover{border-color:#fff}
+.hero-art{position:absolute;inset:0;z-index:1;opacity:.28;pointer-events:none}
+.palm{position:absolute;bottom:-2px;fill:#0b1429}
+.scroll-ind{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);z-index:3;color:#c9d2e6;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.scroll-ind i{width:1px;height:28px;background:linear-gradient(#d9b774,transparent);animation:drip 2s infinite}
+@keyframes drip{0%{opacity:0;transform:translateY(-6px)}50%{opacity:1}100%{opacity:0;transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.scroll-ind i{animation:none}}
+
+/* photo placeholders */
+.ph{position:relative;border-radius:var(--radius);background:linear-gradient(135deg,#dfe6f2,#efe6d2);border:1px solid var(--line);aspect-ratio:4/3;display:grid;place-items:center;color:var(--navy);text-align:center;padding:12px;overflow:hidden}
+.ph span{font-size:.78rem;color:var(--muted);background:rgba(255,255,255,.8);padding:.25em .6em;border-radius:4px}
+.ph.wide{aspect-ratio:16/8}
+.ph.tall{aspect-ratio:3/4}
+
+/* featured convention */
+.featured{display:grid;grid-template-columns:1.1fr 1fr;gap:0;overflow:hidden;padding:0}
+.featured .ph{border:0;border-radius:0;aspect-ratio:auto;min-height:280px}
+.featured .body{padding:28px}
+@media(max-width:820px){.featured{grid-template-columns:1fr}}
+.meta{list-style:none;padding:0;margin:14px 0;display:grid;gap:8px;color:var(--muted);font-size:.94rem}
+.meta li strong{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* steps / progress */
+.progress{display:flex;gap:6px;margin:0 0 22px;flex-wrap:wrap}
+.progress button{flex:1 1 90px;min-width:90px;background:#f3eee2;border:1px solid var(--line);border-radius:8px;padding:.6em .4em;font:inherit;font-size:.78rem;color:var(--muted);cursor:pointer;text-align:center}
+.progress button .n{display:block;font-weight:700;font-size:.9rem;color:var(--navy)}
+.progress button.done{background:#eef3ea;border-color:#c9dcc7;color:var(--ok)}
+.progress button.current{background:var(--navy);border-color:var(--navy);color:#fff}
+.progress button.current .n{color:#fff}
+.progress button:disabled{cursor:default;opacity:.7}
+@media(max-width:620px){.progress button{font-size:.7rem;padding:.5em .2em}}
+
+/* forms */
+.form-grid{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+.form-grid .full{grid-column:1/-1}
+@media(max-width:620px){.form-grid{grid-template-columns:1fr}}
+label{display:block;font-size:.88rem;font-weight:600;color:var(--navy);margin-bottom:6px}
+label .req{color:var(--bad)}
+input,select,textarea{width:100%;font:inherit;font-size:.96rem;padding:.65em .8em;border:1px solid #cfc6b1;border-radius:8px;background:#fff;color:var(--ink)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gold-2);outline-offset:0;border-color:var(--gold)}
+input[aria-invalid="true"],select[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:var(--bad);background:#fff8f7}
+.err{color:var(--bad);font-size:.82rem;margin-top:5px;min-height:0}
+.hint{color:var(--muted);font-size:.82rem;margin-top:5px}
+.pw-row{position:relative}
+.pw-row button{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--navy);font:inherit;font-size:.82rem;cursor:pointer;padding:.3em .5em}
+.checkrow{display:flex;gap:10px;align-items:flex-start;font-weight:500;font-size:.92rem;color:var(--ink)}
+.checkrow input{width:auto;margin-top:4px}
+.radio-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.radio-cards label{margin:0;font-weight:500;border:1px solid #cfc6b1;border-radius:8px;padding:12px;cursor:pointer;background:#fff;color:var(--ink)}
+.radio-cards label.sel{border-color:var(--navy);box-shadow:0 0 0 2px rgba(20,33,61,.12)}
+.radio-cards input{width:auto;margin-right:6px}
+@media(max-width:620px){.radio-cards{grid-template-columns:1fr}}
+.form-actions{display:flex;justify-content:space-between;gap:12px;margin-top:24px;flex-wrap:wrap}
+.form-actions .left{display:flex;gap:10px}
+
+/* packages */
+.pkg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.pkg-grid{grid-template-columns:1fr}}
+.pkg{display:flex;flex-direction:column;gap:10px;position:relative}
+.pkg.sel{border:2px solid var(--navy);padding:21px}
+.pkg .price{font-size:1.6rem;font-weight:700;color:var(--navy)}
+.pkg ul{margin:0;padding-left:18px;color:var(--muted);font-size:.92rem}
+.pkg .foot{margin-top:auto}
+.pkg .incl{font-size:.85rem;color:var(--muted)}
+.pkg .sel-chip{position:absolute;top:14px;right:14px}
+
+/* pricing */
+.price-table{width:100%;border-collapse:collapse;font-size:.94rem}
+.price-table td{padding:9px 0;border-bottom:1px dashed var(--line)}
+.price-table td:last-child{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.price-table tr.sub td{font-weight:600;color:var(--navy);border-bottom:1px solid var(--line)}
+.price-table tr.total td{font-weight:750;font-size:1.05rem;color:var(--navy);border-top:2px solid var(--navy);border-bottom:0;padding-top:12px}
+.price-table tr.neg td{color:var(--ok)}
+.price-table tr.note td{font-size:.8rem;color:var(--muted);border-bottom:0;padding-top:2px}
+.summary-box{position:sticky;top:96px}
+@media(max-width:900px){.summary-box{position:static}}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff}
+table.data{width:100%;border-collapse:collapse;font-size:.92rem}
+table.data th,table.data td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+table.data th{background:#f6f2e8;color:var(--navy);font-weight:650;font-size:.82rem;text-transform:uppercase;letter-spacing:.04em}
+table.data tr:last-child td{border-bottom:0}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.toolbar input,.toolbar select{width:auto;min-width:160px}
+.empty{padding:36px 20px;text-align:center;color:var(--muted);border:1px dashed #d8cfb9;border-radius:var(--radius);background:#fcfaf4}
+
+/* footer */
+.site-footer{background:#101a31;color:#c3cbdd;padding:56px 0 24px;margin-top:60px}
+.site-footer h4{color:#fff;font-size:.95rem;letter-spacing:.02em;margin-bottom:12px}
+.site-footer a{color:#c3cbdd;text-decoration:none;display:block;padding:3px 0;font-size:.92rem}
+.site-footer a:hover{color:#fff}
+.site-footer .fgrid{display:grid;grid-template-columns:2fr 1fr 1fr 1.3fr;gap:30px}
+.site-footer .copy{border-top:1px solid #22304f;margin-top:36px;padding-top:18px;font-size:.82rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:820px){.site-footer .fgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.site-footer .fgrid{grid-template-columns:1fr}}
+
+/* admin */
+.admin-shell{display:grid;grid-template-columns:230px 1fr;min-height:70vh;background:#f4f1ea}
+.admin-side{background:var(--navy);color:#cfd7ea;padding:20px 14px}
+.admin-side a,.admin-side button{display:block;width:100%;text-align:left;color:#cfd7ea;text-decoration:none;padding:.6em .8em;border-radius:6px;background:none;border:0;font:inherit;font-size:.92rem;cursor:pointer}
+.admin-side a:hover,.admin-side button:hover{background:#1d2e52;color:#fff}
+.admin-side a.active{background:#1d2e52;color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.admin-main{padding:26px 28px}
+@media(max-width:820px){.admin-shell{grid-template-columns:1fr}.admin-side{display:flex;flex-wrap:wrap;gap:4px}.admin-side a,.admin-side button{width:auto}}
+.kpi{display:flex;flex-direction:column;gap:4px}
+.kpi .v{font-size:1.8rem;font-weight:700;color:var(--navy)}
+.kpi .l{font-size:.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.member-shell{display:grid;grid-template-columns:230px 1fr;gap:22px;align-items:start}
+@media(max-width:820px){.member-shell{grid-template-columns:1fr}}
+.member-side{position:sticky;top:96px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+.member-side button{display:block;width:100%;text-align:left;background:none;border:0;padding:.6em .8em;border-radius:6px;font:inherit;font-size:.92rem;color:var(--ink);cursor:pointer}
+.member-side button.active{background:#eef1f7;color:var(--navy);font-weight:600}
+@media(max-width:820px){.member-side{position:static;display:flex;flex-wrap:wrap;gap:4px}.member-side button{width:auto}}
+
+/* misc */
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:20px;flex-wrap:wrap}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:.6em .9em;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}
+.tabs button.active{color:var(--navy);border-bottom-color:var(--gold)}
+.pill-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.pill-filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:.35em .9em;font:inherit;font-size:.85rem;cursor:pointer;color:var(--navy)}
+.pill-filters button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.2);z-index:200;font-size:.92rem;max-width:90vw}
+.toast.bad{background:var(--bad)}
+.modal-bg{position:fixed;inset:0;background:rgba(10,18,34,.55);display:grid;place-items:center;z-index:150;padding:20px}
+.modal{background:#fff;border-radius:12px;max-width:560px;width:100%;padding:24px;max-height:90vh;overflow:auto}
+.lightbox-bg{position:fixed;inset:0;background:rgba(5,10,20,.9);display:grid;place-items:center;z-index:160;padding:20px;cursor:zoom-out}
+.lightbox-bg .ph{width:min(90vw,900px);aspect-ratio:4/3;background:linear-gradient(135deg,#2a3a60,#5a4a2a);border:0}
+.lightbox-bg .ph span{background:rgba(0,0,0,.35);color:#fff}
+.timeline{list-style:none;margin:0;padding:0;border-left:2px solid var(--line)}
+.timeline li{padding:0 0 18px 18px;position:relative}
+.timeline li::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--gold)}
+.timeline li strong{color:var(--navy);display:block}
+.faq details{border-bottom:1px solid var(--line);padding:14px 0}
+.faq summary{cursor:pointer;font-weight:600;color:var(--navy);list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";float:right;color:var(--gold);font-size:1.2rem;line-height:1}
+.faq details[open] summary::after{content:"–"}
+.faq details p{margin:10px 0 0;color:var(--muted)}
+.kv{display:grid;grid-template-columns:160px 1fr;gap:8px 16px;font-size:.94rem}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;color:var(--ink);font-weight:500}
+@media(max-width:620px){.kv{grid-template-columns:1fr}}
+.stat-bar{height:8px;background:#eee7d6;border-radius:999px;overflow:hidden}
+.stat-bar i{display:block;height:100%;background:var(--navy)}
+.pageHead{background:var(--paper);border-bottom:1px solid var(--line);padding:44px 0 34px}
+.crumbs{font-size:.84rem;color:var(--muted);margin-bottom:10px}
+.crumbs a{color:var(--muted)}
+.subnav{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-top:18px}
+.subnav a{white-space:nowrap;padding:.45em .85em;border:1px solid var(--line);border-radius:999px;color:var(--navy);text-decoration:none;font-size:.88rem;background:#fff}
+.subnav a.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.print-only{display:none}
+@media print{
+  .site-header,.topbar,.site-footer,.no-print,.toast,.nav,.menu-btn{display:none!important}
+  body{background:#fff}
+  .section{padding:0}
+  .card{box-shadow:none}
+  .print-only{display:block}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar no-print">
+  <div class="wrap">
+    <span>Jain Engineers Society — Goa Chapter · <em>Prototype with sample data</em></span>
+    <span><a href="#/convention">Convention 2027</a> · <a href="#/events">Events</a> · <a href="#/contact">Contact</a></span>
+  </div>
+</div>
+
+<header class="site-header no-print">
+  <div class="wrap">
+    <a class="brand" href="#/" aria-label="JES Goa home">
+      <div class="logo-ph" aria-hidden="true">JES</div>
+      <div class="brand-text"><strong>Jain Engineers Society</strong><span>GOA CHAPTER</span></div>
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mainNav" aria-label="Open navigation menu">Menu</button>
+    <nav class="nav" id="mainNav" aria-label="Primary">
+      <a href="#/" data-route="home">Home</a>
+      <a href="#/about" data-route="about">About JES Goa</a>
+      <a href="#/convention" data-route="convention">National Convention</a>
+      <a href="#/jpl" data-route="jpl">JES Premier League</a>
+      <a href="#/events" data-route="events">Events &amp; Gallery</a>
+      <a href="#/contact" data-route="contact">Contact Us</a>
+      <a href="#/login" data-route="login">Member Login</a>
+      <a class="btn btn-gold nav-cta" href="#/register">Register for Convention</a>
+    </nav>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="site-footer no-print">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>Jain Engineers Society — Goa Chapter</h4>
+        <p style="font-size:.92rem">A community built on professional excellence, meaningful connections, shared experiences and collective growth.</p>
+        <p style="font-size:.82rem;color:#8e99b3">Prototype. All dates, prices, names and contact details shown are placeholders unless marked otherwise.</p>
+      </div>
+      <div>
+        <h4>Quick links</h4>
+        <a href="#/about">About JES Goa</a>
+        <a href="#/convention">National Convention</a>
+        <a href="#/register">Convention registration</a>
+        <a href="#/jpl">JES Premier League</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href="#/events">Events &amp; Gallery</a>
+        <a href="#/contact">Contact Us</a>
+        <a href="#/contact">FAQs</a>
+        <a href="#/policies/privacy">Privacy policy</a>
+        <a href="#/policies/terms">Terms &amp; conditions</a>
+      </div>
+      <div>
+        <h4>Contact &amp; social</h4>
+        <a href="#/contact">[Placeholder email]</a>
+        <a href="#/contact">[Placeholder phone]</a>
+        <a href="#/contact">Social media — [placeholder links]</a>
+      </div>
+    </div>
+    <div class="copy">
+      <span>© 2026 Jain Engineers Society — Goa Chapter. Prototype.</span>
+      <span>All sample content is illustrative.</span>
+    </div>
+  </div>
+</footer>
+
+<div id="overlay"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+/* =========================================================
+   CENTRAL CONFIGURATION — ALL PROTOTYPE DATA LIVES HERE
+   Every price, date, name and contact is sample data.
+   ========================================================= */
+const CONFIG = {
+  prototypeNotice: "Prototype data — all prices, dates, names and contacts are placeholders.",
+  currency: "₹",
+  taxRate: 0.18,              // SAMPLE: applied to subtotal if taxEnabled
+  taxEnabled: true,
+  taxLabel: "GST (sample 18%)",
+  convention: {
+    title: "National Convention",
+    edition: "Edition 1 (sample)",
+    theme: "Connecting Engineers, Shaping Futures",
+    dates: "[Placeholder] 14–16 January 2027",
+    venue: "[Placeholder] Convention Venue",
+    location: "[Placeholder] North Goa",
+    status: "open",           // open | closed | upcoming
+    registrationDeadline: "[Placeholder] 31 December 2026",
+    registrationOpens: "[Placeholder] 1 November 2026",
+    registrationCloses: "[Placeholder] 31 December 2026",
+    capacity: 220,             // SAMPLE availability limit
+    description: "A three-day gathering of members from across India: professional sessions, networking, cultural evenings and sport. All details below are sample content until confirmed by the organising committee.",
+    highlights: [
+      "Keynote sessions by [placeholder speakers]",
+      "Professional networking lounges",
+      "Cultural evening (sample programme)",
+      "Sightseeing and fellowship activities",
+      "Members' exhibition (sample)"
+    ],
+    announcements: [
+      { date: "[Placeholder] 1 Nov 2026", text: "Registration window opens (sample date)." },
+      { date: "[Placeholder] 15 Nov 2026", text: "Package inclusions are being finalised by the committee." }
+    ],
+    faqs: [
+      { q: "Is this a confirmed booking?", a: "No. This prototype creates a demo registration only. No payment is taken and no accommodation is reserved." },
+      { q: "Can I register as a couple or a family?", a: "Yes, in this prototype registration type can be individual, couple, or family/group (where enabled)." },
+      { q: "Are the prices final?", a: "No. All amounts are configurable sample numbers until the committee confirms official pricing." }
+    ]
+  },
+  /* Registration types — drives attendee count */
+  registrationTypes: [
+    { id: "individual", label: "Individual", attendees: 1, enabled: true, hint: "Just you." },
+    { id: "couple",     label: "Couple",     attendees: 2, enabled: true, hint: "You and one guest." },
+    { id: "family",     label: "Family / Group", attendees: 3, enabled: true, hint: "Choose 3–6 attendees (sample limit)." }
+  ],
+  familyMin: 3,
+  familyMax: 6,
+  /* Packages — sample only. `includes` flags prevent duplicate charges. */
+  packages: [
+    {
+      id: "essential", name: "Essential Pass (sample)", price: 9500, occupancyBase: 2,
+      accommodation: "Shared twin room (sample)", meals: "Breakfast only (sample)",
+      activities: "Plenary sessions, networking lounge",
+      eligibility: "Open to all registered members. Sample restrictions: none.",
+      includes: { accommodation: false, meals: false, sightseeing: false },
+      availability: 120, enabled: true
+    },
+    {
+      id: "premier", name: "Premier Stay (sample)", price: 16500, occupancyBase: 2,
+      accommodation: "Standard room for 2 nights (sample)", meals: "All meals (sample)",
+      activities: "All sessions, cultural evening, one sightseeing day",
+      eligibility: "Members and guests. Sample restriction: single-room upgrade not included.",
+      includes: { accommodation: true, meals: true, sightseeing: true },
+      availability: 80, enabled: true
+    },
+    {
+      id: "delegate", name: "Delegate Access (sample)", price: 5500, occupancyBase: 1,
+      accommodation: "Not included — day delegate (sample)", meals: "Lunch on event days (sample)",
+      activities: "Plenary sessions only",
+      eligibility: "Local day delegates only (sample rule).",
+      includes: { accommodation: false, meals: true, sightseeing: false },
+      availability: 40, enabled: true
+    }
+  ],
+  /* Accommodation options — sample charges per room per night */
+  accommodationOptions: [
+    { id: "none",   label: "Accommodation not required", perNight: 0, rooms: 0 },
+    { id: "twin",   label: "Twin sharing room (sample)",  perNight: 3200, occupancy: 2 },
+    { id: "double", label: "Double room (sample)",        perNight: 3800, occupancy: 2 },
+    { id: "single", label: "Single room (sample)",        perNight: 4800, occupancy: 1 }
+  ],
+  nightsDefault: 2,
+  /* Add-ons — illustrative only; none is officially offered */
+  addOns: [
+    { id: "extraNight",    label: "Extra night (illustrative)",       price: 3000, type: "perPerson" },
+    { id: "sightseeing",   label: "Optional sightseeing day (illustrative)", price: 1800, type: "perPerson" },
+    { id: "guestDinner",   label: "Guest dinner (illustrative)",      price: 1500, type: "perPerson" },
+    { id: "airportPickup", label: "Airport pickup (illustrative)",    price: 1200, type: "flat" }
+  ],
+  /* Discounts — sample only */
+  discounts: [
+    { id: "earlyBird", label: "Early-bird discount (sample, 5%)", percent: 5, condition: "Registrations before the placeholder deadline" },
+    { id: "groupOf4",  label: "Group of 4+ discount (sample, ₹500 flat)", flat: 500, minAttendees: 4 }
+  ],
+  events: [
+    { id: "e1", title: "Industry Networking Evening", date: "2026-11-21", location: "[Placeholder] Panjim", category: "Networking", status: "upcoming", desc: "Sample event: an informal evening for members and guests.", registrationOpen: true },
+    { id: "e2", title: "JPL Cricket Opening Day", date: "2026-11-08", location: "[Placeholder] Margao Ground", category: "Sports", status: "upcoming", desc: "Sample: season opener for the JES Premier League cricket league.", registrationOpen: true },
+    { id: "e3", title: "Cultural Evening — Diwali Gathering", date: "2026-10-24", location: "[Placeholder] Chapter hall", category: "Cultural", status: "upcoming", desc: "Sample event for members and families.", registrationOpen: false },
+    { id: "e4", title: "Professional Development Workshop", date: "2026-07-12", location: "[Placeholder] Online", category: "Professional", status: "past", desc: "Sample past event.", registrationOpen: false },
+    { id: "e5", title: "Monsoon Chess Open", date: "2026-08-02", location: "[Placeholder] Panaji", category: "Sports", status: "past", desc: "Sample past JPL chess event.", registrationOpen: false }
+  ],
+  gallery: [
+    { id: "g1", cat: "Convention highlights", caption: "Convention highlights (placeholder)" },
+    { id: "g2", cat: "Member gatherings",     caption: "Member gathering (placeholder)" },
+    { id: "g3", cat: "Cultural evenings",     caption: "Cultural evening (placeholder)" },
+    { id: "g4", cat: "Sports events",         caption: "Sports event (placeholder)" },
+    { id: "g5", cat: "Goa Chapter activities",caption: "Chapter activity (placeholder)" },
+    { id: "g6", cat: "Convention highlights", caption: "Convention venue (placeholder)" }
+  ],
+  committee: [
+    { name: "[Placeholder] Name", role: "President", contact: "[Placeholder]" },
+    { name: "[Placeholder] Name", role: "Secretary", contact: "[Placeholder]" },
+    { name: "[Placeholder] Name", role: "Treasurer", contact: "[Placeholder]" },
+    { name: "[Placeholder] Name", role: "Committee member", contact: "[Placeholder]" }
+  ],
+  jpl: {
+    season: "JPL Season 2026–27 (sample)",
+    sports: [
+      { id: "cricket", name: "Cricket", format: "Team · T20 format (sample)", categories: ["Men's team", "Veterans team (sample)"], description: "Team league with squads, fixtures, points table and player statistics." },
+      { id: "tt", name: "Table Tennis", format: "Singles & doubles (sample)", categories: ["Singles", "Doubles"], description: "Knockout and group fixtures with rankings for singles and doubles." },
+      { id: "chess", name: "Chess", format: "Swiss rounds (sample)", categories: ["Open"], description: "Rounds with pairings, results and cumulative rankings." },
+      { id: "carrom", name: "Carrom", format: "Individual or doubles (sample)", categories: ["Singles", "Doubles"], description: "Round-robin fixtures with match results and rankings." }
+    ],
+    teams: [
+      { id: "t1", name: "Team Mandovi (sample)", sport: "cricket", played: 4, won: 3, lost: 1, pts: 6 },
+      { id: "t2", name: "Team Zuari (sample)",   sport: "cricket", played: 4, won: 2, lost: 2, pts: 4 },
+      { id: "t3", name: "Team Baga (sample)",    sport: "cricket", played: 4, won: 1, lost: 3, pts: 2 },
+      { id: "t4", name: "Team Colva (sample)",   sport: "cricket", played: 4, won: 0, lost: 4, pts: 0 }
+    ],
+    fixtures: [
+      { sport: "cricket", date: "2026-11-08", a: "Team Mandovi (sample)", b: "Team Zuari (sample)", result: null },
+      { sport: "cricket", date: "2026-11-09", a: "Team Baga (sample)",    b: "Team Colva (sample)", result: null },
+      { sport: "chess",   date: "2026-11-14", a: "Round 3 (sample)",      b: "Pairings published by admin", result: null },
+      { sport: "tt",      date: "2026-11-15", a: "Singles QF (sample)",   b: "Sample player A vs B", result: "3–1" }
+    ],
+    rankings: {
+      cricket: [ ["Sample Player 1", 210], ["Sample Player 2", 188], ["Sample Player 3", 160] ],
+      tt:      [ ["Sample Player A", 1480], ["Sample Player B", 1420] ],
+      chess:   [ ["Sample Player X", 5.5], ["Sample Player Y", 5.0] ],
+      carrom:  [ ["Sample Player P", 9], ["Sample Player Q", 7] ]
+    }
+  },
+  /* Demo accounts — SIMULATED ONLY. Client-side check, NOT secure. */
+  demoAccounts: {
+    member: { email: "demo.member@example.test", password: "demo-member", name: "Sample Member", chapter: "JES Goa (sample)", status: "Active (sample)" },
+    admin:  { email: "demo.admin@example.test",  password: "demo-admin",  name: "Sample Admin",  role: "Content admin (sample)" }
+  },
+  members: [
+    { name: "Sample Member One",   email: "m1@example.test", chapter: "JES Goa", status: "Active" },
+    { name: "Sample Member Two",   email: "m2@example.test", chapter: "JES Mumbai", status: "Active" },
+    { name: "Sample Member Three", email: "m3@example.test", chapter: "JES Pune", status: "Pending" },
+    { name: "Sample Member Four",  email: "m4@example.test", chapter: "JES Goa", status: "Lapsed" }
+  ]
+};
+
+/* =========================================================
+   STORAGE — prototype persistence only (localStorage)
+   ========================================================= */
+const STORE_KEY = "jes-goa-prototype-v1";
+const DB = {
+  load() {
+    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || { registrations: [], draft: null, session: null, admin: null, contacts: [] }; }
+    catch { return { registrations: [], draft: null, session: null, admin: null, contacts: [] }; }
+  },
+  save(state) { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {} },
+  state: null,
+  init() { this.state = this.load(); },
+  reset() { try { localStorage.removeItem(STORE_KEY); } catch {} this.init(); }
+};
+DB.init();
+function persist() { DB.save(DB.state); }
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr = n => CONFIG.currency + Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+const fmtDate = iso => { try { return new Date(iso + "T00:00:00").toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }); } catch { return iso; } };
+const uid = p => p + "-" + Math.random().toString(36).slice(2, 7).toUpperCase();
+const demoId = () => "JES-DEMO-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000);
+const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+const isPhone = v => /^[+]?[0-9 ()-]{10,15}$/.test(v.trim());
+function toast(msg, bad = false) {
+  const t = $("#toast"); t.textContent = msg; t.className = "toast" + (bad ? " bad" : ""); t.hidden = false;
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 3200);
+}
+function demoTag() { return '<span class="demo-tag">Sample</span>'; }
+function notice(text) { return `<div class="notice"><strong>Prototype notice:</strong> ${esc(text)}</div>`; }
+
+/* Price engine — single source of truth for all calculations */
+function computeQuote(draft) {
+  const lines = [];
+  const pkg = CONFIG.packages.find(p => p.id === draft.packageId);
+  const attendees = Math.max(1, Number(draft.attendeeCount) || 1);
+  const nights = draft.accommodation?.nights ?? 0;
+  const acc = CONFIG.accommodationOptions.find(a => a.id === (draft.accommodation?.optionId || "none"));
+  const rooms = Math.max(0, Number(draft.accommodation?.rooms) || 0);
+  const addOnSel = draft.addOns || {};
+
+  let base = 0;
+  if (pkg) {
+    base = pkg.price * attendees;
+    lines.push({ label: `${pkg.name} × ${attendees} attendee(s)`, amount: base, kind: "base" });
+  }
+
+  // Accommodation: skip if package already includes it (no double charge)
+  let accTotal = 0;
+  const pkgIncludesAcc = !!(pkg && pkg.includes.accommodation);
+  if (acc && acc.perNight > 0 && rooms > 0 && nights > 0) {
+    if (pkgIncludesAcc) {
+      lines.push({ label: "Accommodation — included in selected package", amount: 0, kind: "note" });
+    } else {
+      accTotal = acc.perNight * rooms * nights;
+      lines.push({ label: `${acc.label} × ${rooms} room(s) × ${nights} night(s)`, amount: accTotal, kind: "charge" });
+    }
+  }
+
+  // Add-ons (skip sightseeing if package includes it, skip extra-night duplicates handled by accommodation)
+  let addTotal = 0;
+  CONFIG.addOns.forEach(a => {
+    const qty = Number(addOnSel[a.id]) || 0;
+    if (!qty) return;
+    if (a.id === "sightseeing" && pkg?.includes.sightseeing) {
+      lines.push({ label: `${a.label} — already included in package`, amount: 0, kind: "note" });
+      return;
+    }
+    const amt = a.type === "perPerson" ? a.price * qty : a.price * qty;
+    addTotal += amt;
+    lines.push({ label: `${a.label} × ${qty}`, amount: amt, kind: "charge" });
+  });
+
+  const subtotal = base + accTotal + addTotal;
+
+  // Discounts
+  let discountTotal = 0;
+  const applied = [];
+  if (draft.discounts?.earlyBird && draft.registrationType?.id) {
+    const d = CONFIG.discounts[0];
+    const amt = Math.round(subtotal * d.percent / 100);
+    discountTotal += amt; applied.push({ label: d.label, amount: amt });
+  }
+  if (attendees >= CONFIG.discounts[1].minAttendees) {
+    const d = CONFIG.discounts[1];
+    discountTotal += d.flat; applied.push({ label: d.label, amount: d.flat });
+  }
+  if (discountTotal > subtotal) discountTotal = subtotal;
+
+  const taxable = subtotal - discountTotal;
+  const tax = CONFIG.taxEnabled ? Math.round(taxable * CONFIG.taxRate) : 0;
+  const total = taxable + tax;
+
+  return { lines, subtotal, applied, discountTotal, tax, total, attendees, pkg, nights, rooms, acc };
+}
+
+function blankDraft() {
+  return {
+    step: 1,
+    primary: { name: "", email: "", mobile: "", city: "", affiliation: "", memberStatus: "" },
+    registrationType: null,
+    attendeeCount: 1,
+    attendees: [],
+    packageId: null,
+    accommodation: { optionId: "none", rooms: 1, nights: CONFIG.nightsDefault, sharing: "", checkIn: "", checkOut: "", special: "" },
+    addOns: {},
+    discounts: { earlyBird: true },
+    terms: false
+  };
+}
+function getDraft() {
+  if (!DB.state.draft) { DB.state.draft = blankDraft(); persist(); }
+  return DB.state.draft;
+}
+function setDraft(d) { DB.state.draft = d; persist(); }
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+const routes = {};
+function route(path, fn) { routes[path] = fn; }
+function currentRoute() {
+  const h = location.hash.replace(/^#/, "") || "/";
+  return h;
+}
+function render() {
+  const path = currentRoute();
+  const app = $("#app");
+  const fn = routes[path] || routes["/404"];
+  setActiveNav(path);
+  app.innerHTML = fn(path);
+  window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  document.title = (pageTitles[path] || "JES Goa") + " — JES Goa Chapter (Prototype)";
+  bindPage(path);
+  $("#mainNav").classList.remove("open");
+  $("#menuBtn").setAttribute("aria-expanded", "false");
+  $("#app").focus({ preventScroll: true });
+}
+const pageTitles = { "/": "Home", "/about": "About JES Goa", "/convention": "National Convention", "/register": "Convention Registration", "/jpl": "JES Premier League", "/login": "Member Login", "/admin-login": "Admin Login", "/member": "Member Dashboard", "/admin": "Admin Dashboard", "/events": "Events & Gallery", "/contact": "Contact", "/policies/privacy": "Privacy Policy", "/policies/terms": "Terms & Conditions" };
+function setActiveNav(path) {
+  const base = path.split("/")[1] || "";
+  const map = { "": "home", about: "about", convention: "convention", register: "convention", jpl: "jpl", events: "events", contact: "contact", login: "login", member: "login", admin: "login", "admin-login": "login" };
+  document.querySelectorAll(".nav a[data-route]").forEach(a => {
+    a.classList.toggle("active", a.dataset.route === map[base]);
+  });
+}
+window.addEventListener("hashchange", render);
+window.addEventListener("load", () => { if (!location.hash) location.hash = "#/"; render(); });
+$("#menuBtn").addEventListener("click", () => {
+  const nav = $("#mainNav"); const open = nav.classList.toggle("open");
+  $("#menuBtn").setAttribute("aria-expanded", String(open));
+});
+
+/* Placeholder image helper — swap src later */
+function ph(label, cls = "") { return `<div class="ph ${cls}" role="img" aria-label="${esc(label)} (placeholder image)"><span>${esc(label)} · placeholder image</span></div>`; }
+
+/* Simple palm silhouette for hero composition */
+function heroArt() {
+  return `<svg class="hero-art" viewBox="0 0 1200 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs><linearGradient id="sea" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#d9b774" stop-opacity=".35"/><stop offset="1" stop-color="#14213d" stop-opacity="0"/></linearGradient></defs>
+    <rect width="1200" height="500" fill="url(#sea)"/>
+    <path d="M0 360 Q 300 320 600 360 T 1200 350 L1200 500 L0 500Z" fill="#0b1429" opacity=".7"/>
+    <g fill="#0b1429"><path d="M1040 420 q-20-120 10-200 q5-40-10-60 q20 30 25 60 q30 -40 60 -30 q-40 20 -40 50 q15 -5 30 10 q-40 -5 -40 40 q-10 60 -35 130Z"/></g>
+    <g fill="#0b1429"><path d="M130 420 q15-100 -10-180 q-5-30 10-50 q-18 25 -20 50 q-25 -35 -55 -25 q35 15 40 45 q-15 -5 -25 8 q35 0 35 35 q5 60 25 117Z"/></g>
+  </svg>`;
+}
+
+/* =========================================================
+   PAGES — PUBLIC
+   ========================================================= */
+route("/", () => {
+  const c = CONFIG.convention;
+  const upcoming = CONFIG.events.filter(e => e.status === "upcoming").slice(0, 3);
+  return `
+  <section class="hero">
+    ${heroArt()}
+    <div class="wrap">
+      <div class="eyebrow">Jain Engineers Society · Goa Chapter</div>
+      <h1>Connecting Engineers. Building Relationships. Creating Impact.</h1>
+      <p>Welcome to the Jain Engineers Society — Goa Chapter, a community built on professional excellence, meaningful connections, shared experiences, and collective growth.</p>
+      <div class="actions">
+        <a class="btn btn-gold" href="#/convention">Explore the Convention</a>
+        <a class="btn btn-ghost" href="#/about">Discover JES Goa</a>
+      </div>
+    </div>
+    <a class="scroll-ind" href="#featured" aria-label="Scroll to featured convention"><span>Scroll</span><i></i></a>
+  </section>
+
+  <section class="section" id="featured">
+    <div class="wrap">
+      <div class="eyebrow">Featured</div>
+      <h2>${esc(c.title)} — ${esc(c.edition)}</h2>
+      <div class="card featured" style="margin-top:18px">
+        ${ph("Convention venue photo", "")}
+        <div class="body">
+          <span class="badge ${c.status === "open" ? "ok" : "warn"}">Registration ${c.status === "open" ? "open" : c.status}</span> ${demoTag()}
+          <h3 style="margin-top:12px;font-size:1.35rem">${esc(c.theme)}</h3>
+          <ul class="meta">
+            <li><strong>Dates:</strong> ${esc(c.dates)}</li>
+            <li><strong>Venue:</strong> ${esc(c.venue)}</li>
+            <li><strong>Location:</strong> ${esc(c.location)}</li>
+            <li><strong>Registration deadline:</strong> ${esc(c.registrationDeadline)}</li>
+          </ul>
+          <p class="lede" style="font-size:.97rem">${esc(c.description)}</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a class="btn btn-primary" href="#/convention">View Convention Details</a>
+            <a class="btn btn-gold" href="#/register">Register Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="eyebrow">Discover JES Goa</div>
+      <h2>A chapter built on people</h2>
+      <div class="grid g4" style="margin-top:22px">
+        ${[
+          ["Community & Networking","Meet engineers and families across the chapter at regular gatherings."],
+          ["Professional Development","Sessions and workshops on engineering practice and career growth."],
+          ["Cultural Activities","Evenings and festivals that bring members and families together."],
+          ["Sports & Fellowship","Through the JES Premier League, friendly competition for every age."]
+        ].map(([t,d]) => `<div class="card"><h3>${t}</h3><p class="lede" style="font-size:.93rem;margin:0">${d}</p></div>`).join("")}
+      </div>
+      <p style="margin-top:14px;font-size:.82rem;color:var(--muted)">Feature descriptions are sample copy.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="eyebrow">JES Premier League</div>
+      <h2>Four sports. One season.</h2>
+      <p class="lede">The JPL is a sports and community initiative for members and families.${demoTag()}</p>
+      <div class="grid g4" style="margin-top:22px">
+        ${CONFIG.jpl.sports.map(s => `<a class="card" href="#/jpl/${s.id}" style="text-decoration:none;color:inherit"><h3>${s.name}</h3><p class="lede" style="font-size:.9rem;margin:0">${esc(s.format)}</p></a>`).join("")}
+      </div>
+      <div style="margin-top:22px"><a class="btn btn-primary" href="#/jpl">Explore JPL</a></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="eyebrow">Upcoming events</div>
+      <h2>On the calendar</h2>
+      <div class="grid g3" style="margin-top:22px">
+        ${upcoming.map(e => eventCard(e)).join("")}
+      </div>
+      <div style="margin-top:20px"><a class="btn btn-ghost" href="#/events">All events</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="eyebrow">Gallery</div>
+      <h2>Moments from the chapter</h2>
+      <p class="lede">Placeholder images until official photographs are supplied.${demoTag()}</p>
+      <div class="grid g3" style="margin-top:22px">
+        ${CONFIG.gallery.slice(0,6).map(g => ph(g.cat, "")).join("")}
+      </div>
+    </div>
+  </section>`;
+});
+
+function eventCard(e) {
+  const badge = e.status === "past" ? '<span class="badge">Past</span>' : `<span class="badge navy">${esc(e.category)}</span>`;
+  const reg = e.status !== "past" && e.registrationOpen ? `<a class="btn btn-ghost btn-sm" href="#/events/${e.id}">Details</a>` : `<a class="btn btn-ghost btn-sm" href="#/events/${e.id}">Details</a>`;
+  return `<article class="card" style="display:flex;flex-direction:column;gap:8px">
+    <div>${badge} ${demoTag()}</div>
+    <h3 style="margin:0">${esc(e.title)}</h3>
+    <div style="font-size:.9rem;color:var(--muted)">${fmtDate(e.date)} · ${esc(e.location)}</div>
+    <p style="font-size:.92rem;color:var(--muted);margin:0">${esc(e.desc)}</p>
+    <div style="margin-top:auto;padding-top:6px">${reg}</div>
+  </article>`;
+}
+
+route("/about", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / About JES Goa</div>
+    <div class="eyebrow">Goa Chapter</div>
+    <h1>About JES Goa</h1>
+    <p class="lede">The Goa Chapter of the Jain Engineers Society brings together engineers, families and friends for professional growth, fellowship and community service.</p>
+    ${notice(CONFIG.prototypeNotice)}
+    <nav class="subnav" aria-label="Chapter sections">
+      <a class="active" href="#/about">Overview</a>
+      <a href="#/about/committee">Committee</a>
+      <a href="#/about/achievements">Past events</a>
+      <a href="#/about/gallery">Gallery</a>
+      <a href="#/contact">Contact</a>
+    </nav>
+  </div></section>
+  <section class="section"><div class="wrap grid g2" style="align-items:start">
+    <div>
+      <h2>Mission and objectives</h2>
+      <p class="lede">The chapter aims to create a strong professional network, support members' development and encourage cultural and sporting activity.</p>
+      <ul style="color:var(--muted);padding-left:18px">
+        <li>Build meaningful professional and personal connections</li>
+        <li>Support learning and career development</li>
+        <li>Host cultural and community activities</li>
+        <li>Grow the JES Premier League</li>
+      </ul>
+      <p style="font-size:.82rem;color:var(--muted)">Mission wording is sample copy pending committee approval.</p>
+    </div>
+    <div class="card">
+      <h3>Community activities</h3>
+      <ul class="timeline">
+        <li><strong>Networking evenings</strong>Regular informal gatherings (sample).</li>
+        <li><strong>Professional sessions</strong>Workshops and talks (sample).</li>
+        <li><strong>Cultural events</strong>Festivals and family evenings (sample).</li>
+        <li><strong>JPL</strong>Sports league across four disciplines (sample).</li>
+      </ul>
+    </div>
+  </div></section>
+  <section class="section alt"><div class="wrap">
+    <h2>Committee snapshot</h2>
+    <p class="lede">Names and roles are placeholders. Replace via the admin dashboard once confirmed.</p>
+    <div class="grid g4" style="margin-top:18px">
+      ${CONFIG.committee.map(c => `<div class="card"><div class="ph" style="aspect-ratio:1/1;border-radius:50%;width:90px;margin-bottom:10px"><span>Photo</span></div><h3 style="margin-bottom:2px">${esc(c.name)}</h3><div style="font-size:.9rem;color:var(--gold);font-weight:600">${esc(c.role)}</div></div>`).join("")}
+    </div>
+  </div></section>`);
+
+route("/about/committee", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/about">About</a> / Committee</div>
+    <h1>Committee & office bearers</h1>
+    ${notice("All committee names and contacts are placeholders. Do not treat as official positions.")}
+    <nav class="subnav"><a href="#/about">Overview</a><a class="active" href="#/about/committee">Committee</a><a href="#/about/achievements">Past events</a><a href="#/about/gallery">Gallery</a></nav>
+  </div></section>
+  <section class="section"><div class="wrap grid g2">
+    ${CONFIG.committee.map(c => `<div class="card" style="display:flex;gap:16px;align-items:center"><div class="ph" style="width:84px;aspect-ratio:1/1;border-radius:50%;flex:0 0 84px"><span>Photo</span></div><div><h3 style="margin-bottom:2px">${esc(c.name)}</h3><div style="color:var(--gold);font-weight:600;font-size:.9rem">${esc(c.role)}</div><div style="font-size:.85rem;color:var(--muted)">Contact: ${esc(c.contact)}</div></div></div>`).join("")}
+  </div></section>`);
+
+route("/about/achievements", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/about">About</a> / Past events</div>
+    <h1>Past events & achievements</h1>
+    ${notice("Sample events only. No achievements are asserted.")}
+    <nav class="subnav"><a href="#/about">Overview</a><a href="#/about/committee">Committee</a><a class="active" href="#/about/achievements">Past events</a><a href="#/about/gallery">Gallery</a></nav>
+  </div></section>
+  <section class="section"><div class="wrap"><ul class="timeline">
+    ${CONFIG.events.filter(e => e.status === "past").map(e => `<li><strong>${fmtDate(e.date)} — ${esc(e.title)}</strong><span style="color:var(--muted)">${esc(e.desc)}</span></li>`).join("")}
+  </ul></div></section>`);
+
+route("/about/gallery", () => galleryPage());
+
+route("/convention", () => {
+  const c = CONFIG.convention;
+  return `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / National Convention</div>
+    <div class="eyebrow">${esc(c.edition)}</div>
+    <h1>${esc(c.title)}</h1>
+    <p class="lede">${esc(c.theme)}</p>
+    ${notice("All dates, venues, prices and inclusions are sample placeholders until confirmed.")}
+    ${convSubnav("overview")}
+  </div></section>
+  <section class="section"><div class="wrap grid g2" style="align-items:start">
+    <div>
+      <h2>Introduction</h2>
+      <p class="lede">${esc(c.description)}</p>
+      <h3 style="margin-top:24px">Highlights</h3>
+      <ul style="color:var(--muted);padding-left:18px">${c.highlights.map(h => `<li>${esc(h)}</li>`).join("")}</ul>
+      <h3 style="margin-top:24px">Important announcements</h3>
+      <ul class="timeline">${c.announcements.map(a => `<li><strong>${esc(a.date)}</strong>${esc(a.text)}</li>`).join("")}</ul>
+    </div>
+    <aside class="card" style="position:sticky;top:96px">
+      <h3>Event details</h3>
+      <dl class="kv">
+        <dt>Dates</dt><dd>${esc(c.dates)}</dd>
+        <dt>Venue</dt><dd>${esc(c.venue)}</dd>
+        <dt>Location</dt><dd>${esc(c.location)}</dd>
+        <dt>Registration opens</dt><dd>${esc(c.registrationOpens)}</dd>
+        <dt>Registration closes</dt><dd>${esc(c.registrationCloses)}</dd>
+        <dt>Status</dt><dd>${regStatusBadge()}</dd>
+      </dl>
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px">
+        <a class="btn btn-gold" href="#/register">Register Now</a>
+        <a class="btn btn-ghost" href="#/convention/packages">View packages (sample)</a>
+      </div>
+    </aside>
+  </div></section>
+  <section class="section alt"><div class="wrap">
+    <h2>Frequently asked questions</h2>
+    <div class="faq" style="max-width:820px;margin-top:14px">
+      ${c.faqs.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("")}
+    </div>
+  </div></section>`;
+});
+
+function convSubnav(active) {
+  const items = [
+    ["overview","Overview","#/convention"],["registration","Registration","#/register"],["packages","Packages & Pricing","#/convention/packages"],
+    ["schedule","Schedule","#/convention/schedule"],["accommodation","Accommodation & Facilities","#/convention/accommodation"],["faqs","FAQs & Contact","#/convention/faqs"]
+  ];
+  return `<nav class="subnav" aria-label="Convention sections">${items.map(([k,l,h]) => `<a href="${h}" class="${k===active?"active":""}">${l}</a>`).join("")}</nav>`;
+}
+function regStatusBadge() {
+  const s = CONFIG.convention.status;
+  const cls = s === "open" ? "ok" : s === "closed" ? "bad" : "warn";
+  return `<span class="badge ${cls}">Registration ${s}</span> ${demoTag()}`;
+}
+
+route("/convention/packages", () => {
+  const price = p => `<div class="price">${inr(p.price)}<span style="font-size:.85rem;color:var(--muted);font-weight:500"> per attendee (sample)</span></div>`;
+  return `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/convention">Convention</a> / Packages</div>
+    <h1>Packages & pricing</h1>
+    ${notice("Sample packages and prices. Actual pricing will be entered by the committee. Taxes and discounts shown are configurable sample values.")}
+    ${convSubnav("packages")}
+  </div></section>
+  <section class="section"><div class="wrap">
+    <div class="pkg-grid">
+      ${CONFIG.packages.map(p => `<article class="card pkg">
+        <h3>${esc(p.name)}</h3>${price(p)}
+        <ul>
+          <li><strong>Occupancy:</strong> ${p.occupancyBase} person(s) (sample)</li>
+          <li><strong>Accommodation:</strong> ${esc(p.accommodation)}</li>
+          <li><strong>Meals:</strong> ${esc(p.meals)}</li>
+          <li><strong>Activities:</strong> ${esc(p.activities)}</li>
+        </ul>
+        <div class="incl"><strong>Eligibility:</strong> ${esc(p.eligibility)}</div>
+        <div class="foot"><a class="btn btn-primary btn-sm" href="#/register">Choose in registration</a></div>
+      </article>`).join("")}
+    </div>
+    <p style="margin-top:18px;font-size:.85rem;color:var(--muted)">Packages that already include accommodation or meals are not charged again for those items in the price calculator.</p>
+  </div></section>`;
+});
+
+route("/convention/schedule", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/convention">Convention</a> / Schedule</div>
+    <h1>Schedule / itinerary</h1>
+    ${notice("Sample itinerary. Times and sessions will be confirmed by the organising committee.")}
+    ${convSubnav("schedule")}
+  </div></section>
+  <section class="section"><div class="wrap"><ul class="timeline">
+    <li><strong>Day 1 · Arrival & registration (sample)</strong>Welcome desk, networking lounge, opening dinner.</li>
+    <li><strong>Day 2 · Plenary & workshops (sample)</strong>Keynote sessions, professional tracks, afternoon sightseeing.</li>
+    <li><strong>Day 3 · Cultural evening & departures (sample)</strong>Evening programme, farewell gathering.</li>
+  </ul></div></section>`);
+
+route("/convention/accommodation", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/convention">Convention</a> / Accommodation</div>
+    <h1>Accommodation & facilities</h1>
+    ${notice("Room types and nightly charges are sample values. Nothing is reserved by this prototype.")}
+    ${convSubnav("accommodation")}
+  </div></section>
+  <section class="section"><div class="wrap grid g3">
+    ${CONFIG.accommodationOptions.filter(a => a.perNight > 0).map(a => `<div class="card"><h3>${esc(a.label)}</h3><div style="font-size:1.4rem;font-weight:700;color:var(--navy)">${inr(a.perNight)}<span style="font-size:.85rem;color:var(--muted);font-weight:500"> / room / night</span></div><p class="lede" style="font-size:.9rem;margin:8px 0 0">Occupancy ${a.occupancy} (sample)</p></div>`).join("")}
+  </div></section>`);
+
+route("/convention/faqs", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/convention">Convention</a> / FAQs</div>
+    <h1>FAQs & contact</h1>
+    ${convSubnav("faqs")}
+  </div></section>
+  <section class="section"><div class="wrap grid g2" style="align-items:start">
+    <div class="faq">${CONFIG.convention.faqs.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("")}</div>
+    <div class="card"><h3>Convention contact</h3><p class="lede" style="font-size:.93rem">[Placeholder] convention coordinator — email and phone to be supplied.</p><a class="btn btn-ghost" href="#/contact">Send a message</a></div>
+  </div></section>`);
+
+route("/jpl", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / JES Premier League</div>
+    <div class="eyebrow">${esc(CONFIG.jpl.season)}</div>
+    <h1>JES Premier League</h1>
+    <p class="lede">A sports and community initiative bringing members together across cricket, table tennis, chess and carrom.</p>
+    ${notice("All teams, fixtures, scores and rankings are sample data.")}
+  </div></section>
+  <section class="section"><div class="wrap grid g4">
+    ${CONFIG.jpl.sports.map(s => `<a class="card" href="#/jpl/${s.id}" style="text-decoration:none;color:inherit"><h3>${s.name}</h3><p class="lede" style="font-size:.9rem;margin:0">${esc(s.format)}</p><div style="margin-top:12px;color:var(--gold);font-weight:600;font-size:.9rem">Open ${s.name} →</div></a>`).join("")}
+  </div></section>
+  <section class="section alt"><div class="wrap grid g2" style="align-items:start">
+    <div>
+      <h2>Upcoming matches</h2>
+      <div class="tbl-wrap">${fixturesTable(CONFIG.jpl.fixtures)}</div>
+    </div>
+    <div>
+      <h2>Leaderboards</h2>
+      <div class="tbl-wrap">${cricketTable()}</div>
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn btn-primary" href="#/jpl/register">Sports registration</a><a class="btn btn-ghost" href="#/jpl/admin">Admin (sample)</a></div>
+    </div>
+  </div></section>`);
+
+function fixturesTable(list) {
+  if (!list.length) return `<div class="empty">No fixtures scheduled yet.</div>`;
+  return `<table class="data"><thead><tr><th>Date</th><th>Sport</th><th>Match</th><th>Result</th></tr></thead><tbody>${list.map(f => `<tr><td>${fmtDate(f.date)}</td><td>${sportName(f.sport)}</td><td>${esc(f.a)} vs ${esc(f.b)}</td><td>${f.result ? esc(f.result) : '<span class="badge navy">Upcoming</span>'}</td></tr>`).join("")}</tbody></table>`;
+}
+function sportName(id) { return CONFIG.jpl.sports.find(s => s.id === id)?.name || id; }
+function cricketTable() {
+  const rows = [...CONFIG.jpl.teams].sort((a,b) => b.pts - a.pts);
+  return `<table class="data"><thead><tr><th>Team</th><th>P</th><th>W</th><th>L</th><th>Pts</th></tr></thead><tbody>${rows.map(t => `<tr><td>${esc(t.name)}</td><td>${t.played}</td><td>${t.won}</td><td>${t.lost}</td><td><strong>${t.pts}</strong></td></tr>`).join("")}</tbody></table>`;
+}
+
+route("/jpl/register", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/jpl">JPL</a> / Sports registration</div>
+    <h1>Player registration (sample)</h1>
+    ${notice("This form does not submit to a real league. Submission is simulated and stored in this browser only.")}
+  </div></section>
+  <section class="section"><div class="wrap" style="max-width:720px">
+    <form id="jplRegForm" class="card" novalidate>
+      <div class="form-grid">
+        <div><label for="jr-name">Full name <span class="req">*</span></label><input id="jr-name" name="name" required><div class="err" data-err="name"></div></div>
+        <div><label for="jr-email">Email <span class="req">*</span></label><input id="jr-email" name="email" type="email" required><div class="err" data-err="email"></div></div>
+        <div><label for="jr-sport">Sport <span class="req">*</span></label>
+          <select id="jr-sport" name="sport" required><option value="">Choose a sport</option>${CONFIG.jpl.sports.map(s => `<option value="${s.id}">${s.name}</option>`).join("")}</select>
+          <div class="err" data-err="sport"></div></div>
+        <div><label for="jr-cat">Category <span class="req">*</span></label><select id="jr-cat" name="category" required><option value="">Choose sport first</option></select><div class="err" data-err="category"></div></div>
+        <div class="full"><label for="jr-team">Team name (if team event)</label><input id="jr-team" name="team"><div class="hint">Leave blank for individual events.</div></div>
+        <div class="full"><label class="checkrow"><input type="checkbox" name="consent" id="jr-consent"> I agree that my details may be used for sample league administration.</label><div class="err" data-err="consent"></div></div>
+      </div>
+      <div class="form-actions"><span></span><button class="btn btn-primary" type="submit">Submit registration (simulated)</button></div>
+    </form>
+  </div></section>`);
+
+route("/jpl/admin", () => {
+  if (!DB.state.admin) return `<section class="section"><div class="wrap"><div class="empty">Admin access required. <a href="#/admin-login">Admin login (simulated)</a></div></div></section>`;
+  return `<section class="pageHead"><div class="wrap"><div class="crumbs"><a href="#/admin">Admin</a> / JPL</div><h1>JPL management (sample)</h1></div></section>
+  <section class="section"><div class="wrap"><div class="card">
+    <h3>Fixtures and scores</h3>
+    <p style="font-size:.9rem;color:var(--muted)">Update results for sample fixtures. Changes are local to this browser.</p>
+    <div class="tbl-wrap"><table class="data"><thead><tr><th>Date</th><th>Match</th><th>Result</th><th></th></tr></thead><tbody>
+      ${CONFIG.jpl.fixtures.map((f,i) => `<tr><td>${fmtDate(f.date)}</td><td>${esc(f.a)} vs ${esc(f.b)}</td><td><input aria-label="Result for fixture ${i+1}" data-fix="${i}" value="${esc(f.result||"")}" placeholder="e.g. 3–1" style="width:120px"></td><td><button class="btn btn-ghost btn-sm" data-save-fix="${i}">Save</button></td></tr>`).join("")}
+    </tbody></table></div>
+  </div></div></section>`;
+});
+
+/* Events */
+route("/events", () => {
+  return `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / Events & Gallery</div>
+    <h1>Events & gallery</h1>
+    <p class="lede">Browse upcoming and past events. All listings are sample content.</p>
+    ${notice(CONFIG.prototypeNotice)}
+    <div class="tabs" role="tablist" style="border:0;margin:0"><a class="btn btn-ghost btn-sm" href="#/events">Events</a> <a class="btn btn-ghost btn-sm" href="#/about/gallery">Gallery</a></div>
+  </div></section>
+  <section class="section"><div class="wrap">
+    <div class="toolbar">
+      <input type="search" id="evSearch" placeholder="Search events" aria-label="Search events">
+      <select id="evCat" aria-label="Category"><option value="">All categories</option>${[...new Set(CONFIG.events.map(e=>e.category))].map(c=>`<option>${c}</option>`).join("")}</select>
+      <select id="evStatus" aria-label="Status"><option value="">Upcoming & past</option><option value="upcoming">Upcoming</option><option value="past">Past</option></select>
+    </div>
+    <div id="evList" class="grid g3">${CONFIG.events.map(eventCard).join("")}</div>
+  </div></section>`;
+});
+
+route("/events/", () => "");
+
+function galleryPage() {
+  const cats = [...new Set(CONFIG.gallery.map(g => g.cat))];
+  return `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/events">Events</a> / Gallery</div>
+    <h1>Community gallery</h1>
+    ${notice("Placeholder images only. No official photographs are shown.")}
+    <nav class="subnav"><a href="#/about/gallery" class="active">Gallery</a><a href="#/events">Events</a></nav>
+  </div></section>
+  <section class="section"><div class="wrap">
+    <div class="pill-filters" role="group" aria-label="Gallery filters">
+      <button class="active" data-gcat="">All</button>
+      ${cats.map(c => `<button data-gcat="${esc(c)}">${esc(c)}</button>`).join("")}
+    </div>
+    <div class="grid g3" id="gGrid">
+      ${CONFIG.gallery.map((g,i) => `<button data-lb="${i}" data-gc="${esc(g.cat)}" style="all:unset;cursor:zoom-in;display:block">${ph(g.caption)}</button>`).join("")}
+    </div>
+  </div></section>`;
+}
+route("/events/gallery", () => galleryPage());
+
+/* Events detail */
+function eventDetailRoute(id) {
+  const e = CONFIG.events.find(x => x.id === id);
+  if (!e) return `<section class="section"><div class="wrap"><div class="empty">Event not found. <a href="#/events">Back to events</a></div></div></section>`;
+  return `<section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/events">Events</a> / ${esc(e.title)}</div>
+    <h1>${esc(e.title)}</h1>
+    <div>${e.status==="past"?'<span class="badge">Past</span>':'<span class="badge navy">Upcoming</span>'} ${demoTag()}</div>
+  </div></section>
+  <section class="section"><div class="wrap grid g2" style="align-items:start">
+    <div class="card"><h3>Details</h3><dl class="kv"><dt>Date</dt><dd>${fmtDate(e.date)}</dd><dt>Location</dt><dd>${esc(e.location)}</dd><dt>Category</dt><dd>${esc(e.category)}</dd></dl><p style="margin-top:14px">${esc(e.desc)}</p></div>
+    <div class="card"><h3>Registration</h3><p style="font-size:.92rem;color:var(--muted)">${e.registrationOpen ? "Registration for this sample event is open in the prototype. Submission is simulated." : "Registration is not open for this event."}</p>
+      ${e.registrationOpen ? `<button class="btn btn-primary" data-event-reg="${e.id}">Register interest (simulated)</button>` : `<button class="btn btn-ghost" disabled>Registration closed</button>`}
+    </div>
+  </div></section>`;
+}
+
+/* Contact */
+route("/contact", () => `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / Contact</div>
+    <h1>Contact us</h1>
+    ${notice("Messages are NOT sent in this prototype. Submission is simulated and saved only in this browser. Connect a backend service to enable real delivery.")}
+  </div></section>
+  <section class="section"><div class="wrap grid g2" style="align-items:start">
+    <form id="contactForm" class="card" novalidate>
+      <div class="form-grid">
+        <div class="full"><label for="c-name">Name <span class="req">*</span></label><input id="c-name" name="name" autocomplete="name"><div class="err" data-err="name"></div></div>
+        <div class="full"><label for="c-email">Email <span class="req">*</span></label><input id="c-email" name="email" type="email" autocomplete="email"><div class="err" data-err="email"></div></div>
+        <div class="full"><label for="c-subject">Subject <span class="req">*</span></label>
+          <select id="c-subject" name="subject"><option value="">Choose a subject</option><option>Convention</option><option>JPL</option><option>Membership</option><option>Events</option><option>Other</option></select>
+          <div class="err" data-err="subject"></div></div>
+        <div class="full"><label for="c-msg">Message <span class="req">*</span></label><textarea id="c-msg" name="message" rows="5"></textarea><div class="hint">At least 10 characters.</div><div class="err" data-err="message"></div></div>
+      </div>
+      <div class="form-actions"><span></span><button class="btn btn-primary" type="submit">Send message (simulated)</button></div>
+    </form>
+    <div>
+      <div class="card" style="margin-bottom:16px"><h3>Chapter contact</h3><p style="font-size:.93rem;color:var(--muted)">[Placeholder] Chapter office email, phone and address.</p></div>
+      <div class="card" style="margin-bottom:16px"><h3>Social media</h3><p style="font-size:.93rem;color:var(--muted)">[Placeholder links — to be supplied]</p></div>
+      <div class="card"><h3>Frequently asked</h3><div class="faq">${[["How do I become a member?","Sample answer: contact the chapter office for the membership process."],["Where are my registrations?","Sample answer: sign in to the member dashboard."]].map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("")}</div></div>
+    </div>
+  </div></section>`);
+
+route("/policies/privacy", () => policyPage("Privacy policy", "This prototype stores demo data in your browser only. No personal information is sent to a server. A production privacy policy must be drafted and approved by the chapter."));
+route("/policies/terms", () => policyPage("Terms & conditions", "Sample terms for the prototype. Real terms, refund rules and eligibility must be approved by the committee before any live use."));
+function policyPage(title, body) {
+  return `<section class="pageHead"><div class="wrap"><div class="crumbs"><a href="#/">Home</a> / ${title}</div><h1>${title}</h1>${notice("Placeholder policy text for prototype review only.")}</div></section>
+  <section class="section"><div class="wrap" style="max-width:760px"><p class="lede">${body}</p></div></section>`;
+}
+
+/* =========================================================
+   CONVENTION REGISTRATION WIZARD
+   ========================================================= */
+const STEPS = [
+  { n: 1, label: "Your details" },
+  { n: 2, label: "Attendees" },
+  { n: 3, label: "Package" },
+  { n: 4, label: "Accommodation" },
+  { n: 5, label: "Add-ons" },
+  { n: 6, label: "Price" },
+  { n: 7, label: "Review" },
+  { n: 8, label: "Confirm" }
+];
+
+route("/register", () => {
+  const d = getDraft();
+  if (DB.state.lastConfirmation) {
+    // allow a fresh registration after success page
+  }
+  return wizardShell(d);
+});
+route("/register/success", () => {
+  const reg = DB.state.registrations.find(r => r.id === DB.state.lastRegId);
+  if (!reg) return `<section class="section"><div class="wrap"><div class="empty">No recent registration found. <a href="#/register">Start a registration</a></div></div></section>`;
+  return successPage(reg);
+});
+
+function wizardShell(d) {
+  const c = CONFIG.convention;
+  return `
+  <section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/convention">Convention</a> / Registration</div>
+    <h1>Convention registration</h1>
+    <p class="lede">${esc(c.title)} — ${esc(c.edition)}. Demo registration only; no payment is taken and no accommodation is reserved.</p>
+    ${notice(CONFIG.prototypeNotice + " Demo registration — not a confirmed booking.")}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn btn-ghost btn-sm" id="resetDraft" type="button">Start a new draft</button>
+      <span class="badge ok">Drafts saved in this browser</span>
+    </div>
+  </div></section>
+  <section class="section"><div class="wrap grid" style="grid-template-columns:minmax(0,1fr) 340px;gap:26px;align-items:start" id="wizardGrid">
+    <div>
+      <nav class="progress" aria-label="Registration progress">
+        ${STEPS.map(s => `<button type="button" data-goto="${s.n}" class="${s.n===d.step?"current":s.n<d.step?"done":""}" ${s.n>d.step?"disabled":""} aria-current="${s.n===d.step?"step":"false"}"><span class="n">${s.n}</span>${s.label}</button>`).join("")}
+      </nav>
+      <div class="card" id="stepBody">${stepBody(d)}</div>
+    </div>
+    <aside class="card summary-box" aria-label="Registration summary">
+      <h3>Your selections</h3>
+      <div id="liveSummary">${summaryHTML(d)}</div>
+    </aside>
+  </div>
+  <style>@media(max-width:900px){#wizardGrid{grid-template-columns:1fr!important}}</style>
+  </section>`;
+}
+
+function stepBody(d) {
+  switch (d.step) {
+    case 1: return step1(d);
+    case 2: return step2(d);
+    case 3: return step3(d);
+    case 4: return step4(d);
+    case 5: return step5(d);
+    case 6: return step6(d);
+    case 7: return step7(d);
+    case 8: return step8(d);
+  }
+  return "";
+}
+
+function navButtons(d, { nextLabel = "Next", nextType = "button", disableNext = false } = {}) {
+  return `<div class="form-actions">
+    <div class="left">${d.step > 1 ? `<button type="button" class="btn btn-ghost" data-back>← Back</button>` : `<span></span>`}</div>
+    <button type="${nextType}" class="btn btn-primary" data-next ${disableNext?"disabled":""}>${nextLabel} →</button>
+  </div>`;
+}
+
+function step1(d) {
+  const p = d.primary;
+  return `
+  <h2 style="font-size:1.3rem">Step 1 — Primary registrant</h2>
+  <p class="lede" style="font-size:.93rem">Tell us who is registering. Details are stored in this browser only.</p>
+  <form id="s1" novalidate>
+    <div class="form-grid">
+      <div><label for="f-name">Full name <span class="req">*</span></label><input id="f-name" name="name" value="${esc(p.name)}" autocomplete="name"><div class="err" data-err="name"></div></div>
+      <div><label for="f-email">Email <span class="req">*</span></label><input id="f-email" name="email" type="email" value="${esc(p.email)}" autocomplete="email"><div class="err" data-err="email"></div></div>
+      <div><label for="f-mobile">Mobile number <span class="req">*</span></label><input id="f-mobile" name="mobile" type="tel" value="${esc(p.mobile)}" placeholder="+91 …" autocomplete="tel"><div class="err" data-err="mobile"></div></div>
+      <div><label for="f-city">City <span class="req">*</span></label><input id="f-city" name="city" value="${esc(p.city)}"><div class="err" data-err="city"></div></div>
+      <div class="full"><label for="f-aff">JES chapter or affiliation <span class="req">*</span></label>
+        <select id="f-aff" name="affiliation"><option value="">Choose a chapter</option>${["JES Goa","JES Mumbai","JES Pune","JES Other / Non-chapter (sample list)"].map(o=>`<option ${p.affiliation===o?"selected":""}>${o}</option>`).join("")}</select>
+        <div class="err" data-err="affiliation"></div></div>
+      <div class="full"><label>Membership status <span class="req">*</span></label>
+        <div class="radio-cards" role="radiogroup" aria-label="Membership status">
+          ${[["member","Member"],["nonmember","Non-member (guest)"]].map(([v,l]) => `<label class="${p.memberStatus===v?"sel":""}"><input type="radio" name="memberStatus" value="${v}" ${p.memberStatus===v?"checked":""}>${l}</label>`).join("")}
+        </div>
+        <div class="err" data-err="memberStatus"></div></div>
+    </div>
+    ${navButtons(d, { nextType: "submit" })}
+  </form>`;
+}
+
+function step2(d) {
+  const types = CONFIG.registrationTypes.filter(t => t.enabled);
+  const count = d.attendeeCount;
+  const n = d.registrationType?.id;
+  const isFamily = n === "family";
+  return `
+  <h2 style="font-size:1.3rem">Step 2 — Attendees</h2>
+  <p class="lede" style="font-size:.93rem">Choose how you are registering. Attendee fields update automatically.</p>
+  <form id="s2" novalidate>
+    <fieldset style="border:0;padding:0;margin:0 0 18px"><legend style="font-weight:600;color:var(--navy);margin-bottom:8px">Registration type <span class="req">*</span></legend>
+      <div class="radio-cards" role="radiogroup">
+        ${types.map(t => `<label class="${n===t.id?"sel":""}"><input type="radio" name="regType" value="${t.id}" ${n===t.id?"checked":""}><strong>${t.label}</strong><div class="hint" style="margin-top:4px">${t.hint}</div></label>`).join("")}
+      </div>
+      <div class="err" data-err="regType"></div>
+    </fieldset>
+    ${isFamily ? `<div style="margin-bottom:14px"><label for="cnt">Number of attendees (incl. you) <span class="req">*</span></label>
+      <select id="cnt" name="count">${Array.from({length: CONFIG.familyMax - CONFIG.familyMin + 1}, (_,i)=>CONFIG.familyMin+i).map(v=>`<option value="${v}" ${v===count?"selected":""}>${v}</option>`).join("")}</select>
+      <div class="hint">Sample limit: ${CONFIG.familyMin}–${CONFIG.familyMax} attendees.</div></div>` : ""}
+    <div class="form-grid" id="attendeeFields">
+      ${Array.from({length: n ? (isFamily ? count : (types.find(t=>t.id===n)?.attendees||1)) : 0}, (_, i) => {
+        const a = d.attendees[i] || { name: "", relation: i===0?"Self (primary)":"" };
+        const isSelf = i === 0;
+        return `<fieldset class="full" style="border:1px solid var(--line);border-radius:8px;padding:14px;margin:0">
+          <legend style="font-weight:600;color:var(--navy);padding:0 6px">Attendee ${i+1}${isSelf?" (you)":""}</legend>
+          <div class="form-grid">
+            <div><label for="at-${i}-name">Full name <span class="req">*</span></label><input id="at-${i}-name" data-at="${i}" data-key="name" value="${esc(isSelf && !a.name ? d.primary.name : a.name)}"><div class="err" data-err="at-${i}-name"></div></div>
+            <div><label for="at-${i}-rel">Relation</label><input id="at-${i}-rel" data-at="${i}" data-key="relation" value="${esc(isSelf?"Self (primary)":a.relation)}" ${isSelf?"readonly":""}></div>
+          </div>
+        </fieldset>`;
+      }).join("")}
+    </div>
+    ${!n ? `<div class="empty" style="margin-top:12px">Choose a registration type to add attendees.</div>` : ""}
+    ${navButtons(d, { nextType: "submit", disableNext: !n })}
+  </form>`;
+}
+
+function step3(d) {
+  const pkgs = CONFIG.packages.filter(p => p.enabled);
+  return `
+  <h2 style="font-size:1.3rem">Step 3 — Package</h2>
+  <p class="lede" style="font-size:.93rem">Choose one package. Prices are sample values; the price shown is per attendee.</p>
+  <form id="s3" novalidate>
+    <div class="pkg-grid">
+      ${pkgs.map(p => {
+        const sel = d.packageId === p.id;
+        const avail = availabilityFor(p.id);
+        return `<label class="card pkg ${sel?"sel":""}" style="cursor:pointer">
+          <input type="radio" name="pkg" value="${p.id}" ${sel?"checked":""} style="position:absolute;opacity:0" aria-label="${esc(p.name)}">
+          ${sel?'<span class="badge navy sel-chip">Selected</span>':""}
+          <h3>${esc(p.name)}</h3>
+          <div class="price">${inr(p.price)}<span style="font-size:.82rem;color:var(--muted);font-weight:500"> / attendee (sample)</span></div>
+          <ul>
+            <li><strong>Occupancy:</strong> ${p.occupancyBase} (sample)</li>
+            <li><strong>Accommodation:</strong> ${esc(p.accommodation)}</li>
+            <li><strong>Meals:</strong> ${esc(p.meals)}</li>
+            <li><strong>Activities:</strong> ${esc(p.activities)}</li>
+          </ul>
+          <div class="incl"><strong>Eligibility:</strong> ${esc(p.eligibility)}</div>
+          <div class="foot"><span class="badge ${avail<=5?"warn":"ok"}">${avail} places left (sample)</span></div>
+        </label>`;
+      }).join("")}
+    </div>
+    <div class="err" data-err="pkg" style="margin-top:10px"></div>
+    ${navButtons(d, { nextType: "submit", disableNext: !d.packageId })}
+  </form>`;
+}
+
+function availabilityFor(pkgId) {
+  const p = CONFIG.packages.find(x => x.id === pkgId);
+  if (!p) return 0;
+  const used = DB.state.registrations.filter(r => r.status !== "Cancelled" && r.packageId === pkgId).reduce((s, r) => s + (r.attendeeCount||1), 0);
+  return Math.max(0, p.availability - used);
+}
+
+function step4(d) {
+  const a = d.accommodation;
+  const pkg = CONFIG.packages.find(p => p.id === d.packageId);
+  const pkgIncludes = !!pkg?.includes.accommodation;
+  const noAcc = a.optionId === "none";
+  return `
+  <h2 style="font-size:1.3rem">Step 4 — Accommodation</h2>
+  <p class="lede" style="font-size:.93rem">${pkgIncludes ? "Your selected package already includes accommodation. Room charges will not be added again." : "Choose accommodation if you need a room. Charges are sample values."}</p>
+  <form id="s4" novalidate>
+    <div class="form-grid">
+      <div class="full"><label for="acc-opt">Accommodation option</label>
+        <select id="acc-opt" name="optionId">${CONFIG.accommodationOptions.map(o=>`<option value="${o.id}" ${a.optionId===o.id?"selected":""}>${esc(o.label)}${o.perNight?` — ${inr(o.perNight)}/room/night`:""}</option>`).join("")}</select></div>
+      <div><label for="acc-rooms">Number of rooms</label><input id="acc-rooms" type="number" min="0" max="10" name="rooms" value="${a.rooms}" ${noAcc?"disabled":""}><div class="err" data-err="rooms"></div></div>
+      <div><label for="acc-nights">Nights</label><input id="acc-nights" type="number" min="0" max="7" name="nights" value="${a.nights}" ${noAcc?"disabled":""}><div class="err" data-err="nights"></div></div>
+      <div><label for="acc-share">Room-sharing preference</label><select id="acc-share" name="sharing" ${noAcc?"disabled":""}><option value="">No preference</option><option ${a.sharing==="With a family member"?"selected":""}>With a family member</option><option ${a.sharing==="With a colleague"?"selected":""}>With a colleague</option><option ${a.sharing==="Alone"?"selected":""}>Alone</option></select></div>
+      <div><label for="acc-in">Check-in date</label><input id="acc-in" type="date" name="checkIn" value="${esc(a.checkIn)}" ${noAcc?"disabled":""}></div>
+      <div><label for="acc-out">Check-out date</label><input id="acc-out" type="date" name="checkOut" value="${esc(a.checkOut)}" ${noAcc?"disabled":""}><div class="err" data-err="checkOut"></div></div>
+      <div class="full"><label for="acc-special">Special accommodation requests</label><textarea id="acc-special" name="special" rows="3" ${noAcc?"disabled":""}>${esc(a.special)}</textarea><div class="hint">Requests are recorded only; they are not guaranteed.</div></div>
+    </div>
+    ${navButtons(d, { nextType: "submit" })}
+  </form>`;
+}
+
+function step5(d) {
+  const sel = d.addOns || {};
+  const pkg = CONFIG.packages.find(p => p.id === d.packageId);
+  return `
+  <h2 style="font-size:1.3rem">Step 5 — Additional options</h2>
+  <p class="lede" style="font-size:.93rem"><span class="badge warn">Illustrative</span> None of these add-ons is officially offered. Quantities are sample selections.</p>
+  <form id="s5" novalidate>
+    <div class="grid" style="gap:12px">
+      ${CONFIG.addOns.map(a => {
+        const isSight = a.id === "sightseeing" && pkg?.includes.sightseeing;
+        const q = sel[a.id] || 0;
+        return `<div class="card" style="padding:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+          <div><strong>${esc(a.label)}</strong><div class="hint">${inr(a.price)} ${a.type==="perPerson"?"per person":"flat"} (sample)${isSight?" · already included in selected package":""}</div></div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <label for="ao-${a.id}" style="margin:0;font-weight:500">Qty</label>
+            <input id="ao-${a.id}" type="number" min="0" max="10" value="${q}" data-addon="${a.id}" style="width:90px" ${isSight?"disabled":""}>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+    ${navButtons(d, { nextType: "submit" })}
+  </form>`;
+}
+
+function step6(d) {
+  const q = computeQuote(d);
+  return `
+  <h2 style="font-size:1.3rem">Step 6 — Price calculation</h2>
+  <p class="lede" style="font-size:.93rem">Every change updates the total immediately. All amounts are sample numbers in ${CONFIG.currency}.</p>
+  ${priceTable(q, d)}
+  ${navButtons(d, { nextType: "button" })}`;
+}
+
+function priceTable(q, d) {
+  const dRows = q.applied.length
+    ? q.applied.map(x => `<tr class="neg"><td>Discount — ${esc(x.label)}</td><td>− ${inr(x.amount)}</td></tr>`).join("")
+    : `<tr class="note"><td colspan="2">No discounts applied.</td></tr>`;
+  return `
+  <div class="card" style="padding:0;overflow:hidden">
+    <table class="price-table" style="padding:18px 22px;display:table">
+      <tbody>
+        <tr class="sub"><td colspan="2">Breakdown</td></tr>
+        ${q.lines.length ? q.lines.map(l => `<tr class="${l.kind==="note"?"note":""}"><td>${esc(l.label)}</td><td>${l.kind==="note"?"—":inr(l.amount)}</td></tr>`).join("") : `<tr class="note"><td colspan="2">Choose a package to see charges.</td></tr>`}
+        <tr class="sub"><td>Subtotal</td><td>${inr(q.subtotal)}</td></tr>
+        ${dRows}
+        <tr><td>Total discounts</td><td>− ${inr(q.discountTotal)}</td></tr>
+        <tr><td>${esc(CONFIG.taxEnabled ? CONFIG.taxLabel : "Taxes (not configured)")}</td><td>${inr(q.tax)}</td></tr>
+        <tr class="total"><td>Final payable amount (demo)</td><td>${inr(q.total)}</td></tr>
+        <tr class="note"><td colspan="2">Formula: package + accommodation + add-ons + taxes − discounts. Demo amount only — no payment is requested.</td></tr>
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function step7(d) {
+  const q = computeQuote(d);
+  const pkg = q.pkg;
+  const acc = CONFIG.accommodationOptions.find(a => a.id === d.accommodation.optionId);
+  const addOnLines = CONFIG.addOns.filter(a => Number(d.addOns[a.id])>0).map(a => `${esc(a.label)} × ${d.addOns[a.id]}`);
+  const regType = CONFIG.registrationTypes.find(t => t.id === d.registrationType?.id)?.label || "—";
+  return `
+  <h2 style="font-size:1.3rem">Step 7 — Review</h2>
+  <p class="lede" style="font-size:.93rem">Check each section. Use Edit to change anything.</p>
+  <div class="grid" style="gap:14px">
+    ${reviewBlock("Registrant", 1, `<dl class="kv">
+      <dt>Name</dt><dd>${esc(d.primary.name)}</dd><dt>Email</dt><dd>${esc(d.primary.email)}</dd>
+      <dt>Mobile</dt><dd>${esc(d.primary.mobile)}</dd><dt>City</dt><dd>${esc(d.primary.city)}</dd>
+      <dt>Affiliation</dt><dd>${esc(d.primary.affiliation)}</dd><dt>Status</dt><dd>${d.primary.memberStatus==="member"?"Member":"Non-member"}</dd></dl>`)}
+    ${reviewBlock("Attendees", 2, `<p style="margin:0 0 6px">${regType} · ${d.attendees.length} attendee(s)</p><ol style="margin:0;padding-left:18px">${d.attendees.map(a=>`<li>${esc(a.name)} <span class="hint">(${esc(a.relation||"—")})</span></li>`).join("")}</ol>`)}
+    ${reviewBlock("Package", 3, pkg ? `<strong>${esc(pkg.name)}</strong> — ${inr(pkg.price)} per attendee (sample)` : `<span class="badge bad">Not selected</span>`)}
+    ${reviewBlock("Accommodation", 4, acc && acc.id!=="none" && !(pkg?.includes.accommodation) ? `${esc(acc.label)} · ${d.accommodation.rooms} room(s) · ${d.accommodation.nights} night(s)${d.accommodation.checkIn?` · in ${fmtDate(d.accommodation.checkIn)}`:""}${d.accommodation.checkOut?` · out ${fmtDate(d.accommodation.checkOut)}`:""}` : (pkg?.includes.accommodation ? "Included in selected package" : "Not required"))}
+    ${reviewBlock("Add-ons", 5, addOnLines.length ? addOnLines.join("<br>") : "None selected")}
+    ${reviewBlock("Price", 6, priceTable(q, d))}
+  </div>
+  <form id="s7" novalidate style="margin-top:18px">
+    <label class="checkrow"><input type="checkbox" name="terms" ${d.terms?"checked":""}> I confirm the information above is correct and I accept the demo registration terms: this is a demo, not a confirmed booking, and no payment or accommodation is reserved.</label>
+    <div class="err" data-err="terms"></div>
+    <div class="form-actions"><div class="left"><button type="button" class="btn btn-ghost" data-back>← Back</button></div><button type="submit" class="btn btn-gold" data-submit>Submit demo registration</button></div>
+  </form>`;
+}
+function reviewBlock(title, step, body) {
+  return `<div class="card" style="padding:16px 18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0;font-size:1rem">${title}</h3><button class="btn btn-ghost btn-sm" data-edit="${step}">Edit</button></div>
+    <div style="font-size:.94rem">${body}</div>
+  </div>`;
+}
+
+function step8(d) {
+  return `<h2 style="font-size:1.3rem">Step 8 — Confirmation</h2><p class="lede">Your registration is being created. If you see this for long, go back to step 7.</p>`;
+}
+
+function summaryHTML(d) {
+  const q = computeQuote(d);
+  const pkg = q.pkg;
+  return `<dl class="kv" style="grid-template-columns:110px 1fr;font-size:.88rem">
+    <dt>Name</dt><dd>${esc(d.primary.name||"—")}</dd>
+    <dt>Type</dt><dd>${esc(CONFIG.registrationTypes.find(t=>t.id===d.registrationType?.id)?.label||"—")}</dd>
+    <dt>Attendees</dt><dd>${d.attendees.length||0}</dd>
+    <dt>Package</dt><dd>${pkg?esc(pkg.name):"—"}</dd>
+    <dt>Accommodation</dt><dd>${esc(CONFIG.accommodationOptions.find(a=>a.id===d.accommodation.optionId)?.label||"—")}</dd>
+  </dl>
+  <div style="border-top:1px solid var(--line);margin:14px 0 8px;padding-top:12px;display:flex;justify-content:space-between;font-weight:700;color:var(--navy)"><span>Total (demo)</span><span>${inr(q.total)}</span></div>
+  <div class="hint">Includes sample tax and discounts. Not a payment request.</div>`;
+}
+
+/* Wizard state & handlers */
+function setStep(n) {
+  const d = getDraft(); d.step = n; setDraft(d); rerenderWizard();
+}
+function rerenderWizard() {
+  const d = getDraft();
+  const body = $("#stepBody"); if (body) body.innerHTML = stepBody(d);
+  const side = $("#liveSummary"); if (side) side.innerHTML = summaryHTML(d);
+  const prog = document.querySelector(".progress");
+  if (prog) prog.outerHTML = `<nav class="progress" aria-label="Registration progress">${STEPS.map(s => `<button type="button" data-goto="${s.n}" class="${s.n===d.step?"current":s.n<d.step?"done":""}" ${s.n>d.step?"disabled":""} aria-current="${s.n===d.step?"step":"false"}"><span class="n">${s.n}</span>${s.label}</button>`).join("")}</nav>`;
+  bindWizard();
+  const h = $("#stepBody h2"); if (h) h.setAttribute("tabindex","-1"), h.focus();
+}
+
+function validate(stepN, d) {
+  const errs = {};
+  if (stepN === 1) {
+    const p = d.primary;
+    if (!p.name?.trim() || p.name.trim().length < 3) errs.name = "Enter your full name (at least 3 characters).";
+    if (!isEmail(p.email||"")) errs.email = "Enter a valid email address.";
+    if (!isPhone(p.mobile||"")) errs.mobile = "Enter a valid mobile number (10–15 digits).";
+    if (!p.city?.trim()) errs.city = "Enter your city.";
+    if (!p.affiliation) errs.affiliation = "Choose your chapter or affiliation.";
+    if (!p.memberStatus) errs.memberStatus = "Choose member or non-member.";
+  }
+  if (stepN === 2) {
+    if (!d.registrationType) errs.regType = "Choose a registration type.";
+    const count = d.attendees.length;
+    if (d.registrationType?.id === "family" && (count < CONFIG.familyMin || count > CONFIG.familyMax)) errs.count = `Family registration needs ${CONFIG.familyMin}–${CONFIG.familyMax} attendees.`;
+    d.attendees.forEach((a, i) => { if (!a.name?.trim()) errs[`at-${i}-name`] = "Enter this attendee's name."; });
+  }
+  if (stepN === 3) { if (!d.packageId) errs.pkg = "Select a package to continue."; }
+  if (stepN === 4) {
+    const a = d.accommodation;
+    if (a.optionId !== "none") {
+      if (!(Number(a.rooms) >= 1)) errs.rooms = "Enter at least one room.";
+      if (!(Number(a.nights) >= 1)) errs.nights = "Enter at least one night.";
+      if (a.checkIn && a.checkOut && a.checkOut <= a.checkIn) errs.checkOut = "Check-out must be after check-in.";
+      const opt = CONFIG.accommodationOptions.find(o => o.id === a.optionId);
+      if (opt?.occupancy && Number(a.rooms) * opt.occupancy < d.attendeeCount && a.optionId !== "none") {
+        errs.rooms = `This room type holds ${opt.occupancy} per room. Add rooms to cover ${d.attendeeCount} attendee(s).`;
+      }
+    }
+  }
+  if (stepN === 7) { if (!d.terms) errs.terms = "Please confirm and accept the terms to submit."; }
+  return errs;
+}
+
+function showErrors(errs) {
+  document.querySelectorAll("[data-err]").forEach(el => el.textContent = "");
+  document.querySelectorAll("[aria-invalid]").forEach(el => el.removeAttribute("aria-invalid"));
+  let first = null;
+  Object.entries(errs).forEach(([k, msg]) => {
+    const el = document.querySelector(`[data-err="${CSS.escape(k)}"]`);
+    if (el) el.textContent = msg;
+    const input = document.getElementById(k === "name" ? "f-name" : k === "email" ? "f-email" : k === "mobile" ? "f-mobile" : k === "city" ? "f-city" : k === "affiliation" ? "f-aff" : k) || document.querySelector(`[name="${k}"]`);
+    if (input) { input.setAttribute("aria-invalid","true"); first = first || input; }
+  });
+  if (first) first.focus();
+  return Object.keys(errs).length === 0;
+}
+
+function bindWizard() {
+  const d = getDraft();
+  const body = $("#stepBody");
+  if (!body) return;
+
+  $("#resetDraft")?.addEventListener("click", () => {
+    if (!confirm("Start a new draft? Your current unsaved selections on this page will be cleared.")) return;
+    DB.state.draft = blankDraft(); persist(); rerenderWizard(); toast("New draft started.");
+  });
+
+  document.querySelectorAll("[data-goto]").forEach(b => b.addEventListener("click", () => setStep(Number(b.dataset.goto))));
+  document.querySelectorAll("[data-back]").forEach(b => b.addEventListener("click", () => setStep(Math.max(1, d.step - 1))));
+  document.querySelectorAll("[data-edit]").forEach(b => b.addEventListener("click", () => setStep(Number(b.dataset.edit))));
+
+  // Step 1 — fields
+  const s1 = $("#s1");
+  if (s1) {
+    s1.addEventListener("input", e => {
+      const t = e.target; if (!t.name) return;
+      if (["name","email","mobile","city","affiliation"].includes(t.name)) d.primary[t.name] = t.value;
+      if (t.name === "memberStatus") d.primary.memberStatus = t.value;
+      setDraft(d); $("#liveSummary").innerHTML = summaryHTML(d);
+    });
+    s1.addEventListener("change", e => { if (e.target.name === "memberStatus") { d.primary.memberStatus = e.target.value; setDraft(d); rerenderWizard(); } });
+    s1.addEventListener("submit", e => {
+      e.preventDefault();
+      if (showErrors(validate(1, d))) { setStep(2); }
+      else toast("Please fix the highlighted fields.", true);
+    });
+  }
+
+  // Step 2 — registration type + attendees
+  const s2 = $("#s2");
+  if (s2) {
+    s2.addEventListener("change", e => {
+      if (e.target.name === "regType") {
+        const t = CONFIG.registrationTypes.find(x => x.id === e.target.value);
+        d.registrationType = { id: t.id, label: t.label };
+        d.attendeeCount = t.attendees;
+        // seed attendee list
+        const list = [];
+        for (let i = 0; i < t.attendees; i++) list.push(d.attendees[i] || { name: i===0?d.primary.name:"", relation: i===0?"Self (primary)":"" });
+        d.attendees = list; setDraft(d); rerenderWizard();
+      }
+      if (e.target.name === "count") {
+        const c = Number(e.target.value); d.attendeeCount = c;
+        const list = [];
+        for (let i = 0; i < c; i++) list.push(d.attendees[i] || { name: i===0?d.primary.name:"", relation: i===0?"Self (primary)":"" });
+        d.attendees = list; setDraft(d); rerenderWizard();
+      }
+    });
+    s2.addEventListener("input", e => {
+      const t = e.target; if (t.dataset.at === undefined) return;
+      const i = Number(t.dataset.at);
+      d.attendees[i] = d.attendees[i] || {};
+      d.attendees[i][t.dataset.key] = t.value;
+      setDraft(d); $("#liveSummary").innerHTML = summaryHTML(d);
+    });
+    s2.addEventListener("submit", e => {
+      e.preventDefault();
+      if (showErrors(validate(2, d))) setStep(3); else toast("Please complete the attendee details.", true);
+    });
+  }
+
+  // Step 3 — package
+  const s3 = $("#s3");
+  if (s3) {
+    s3.addEventListener("change", e => {
+      if (e.target.name === "pkg") {
+        d.packageId = e.target.value;
+        // if package includes accommodation, leave rooms but mark as included
+        setDraft(d); rerenderWizard(); toast("Package selected — price updated.");
+      }
+    });
+    s3.addEventListener("submit", e => {
+      e.preventDefault();
+      if (showErrors(validate(3, d))) setStep(4); else toast("Select a package.", true);
+    });
+  }
+
+  // Step 4 — accommodation
+  const s4 = $("#s4");
+  if (s4) {
+    const sync = () => {
+      const f = s4.elements;
+      d.accommodation.optionId = f.optionId.value;
+      d.accommodation.rooms = Number(f.rooms?.value || 0);
+      d.accommodation.nights = Number(f.nights?.value || 0);
+      d.accommodation.sharing = f.sharing?.value || "";
+      d.accommodation.checkIn = f.checkIn?.value || "";
+      d.accommodation.checkOut = f.checkOut?.value || "";
+      d.accommodation.special = f.special?.value || "";
+      setDraft(d); $("#liveSummary").innerHTML = summaryHTML(d);
+    };
+    s4.addEventListener("input", sync);
+    s4.addEventListener("change", e => { sync(); if (e.target.name === "optionId") rerenderWizard(); });
+    s4.addEventListener("submit", e => {
+      e.preventDefault(); sync();
+      if (showErrors(validate(4, d))) setStep(5); else toast("Check the accommodation details.", true);
+    });
+  }
+
+  // Step 5 — add-ons
+  const s5 = $("#s5");
+  if (s5) {
+    s5.addEventListener("input", e => {
+      const t = e.target; if (!t.dataset.addon) return;
+      const v = Math.max(0, Math.min(10, Number(t.value) || 0));
+      d.addOns[t.dataset.addon] = v;
+      setDraft(d); $("#liveSummary").innerHTML = summaryHTML(d);
+    });
+    s5.addEventListener("submit", e => { e.preventDefault(); setStep(6); });
+  }
+
+  // Step 6 — price (Next button)
+  const next6 = $("#stepBody [data-next]");
+  if (next6 && d.step === 6) next6.addEventListener("click", () => setStep(7));
+
+  // Step 7 — review submit
+  const s7 = $("#s7");
+  if (s7) {
+    s7.addEventListener("change", e => { if (e.target.name === "terms") { d.terms = e.target.checked; setDraft(d); } });
+    s7.addEventListener("submit", e => {
+      e.preventDefault();
+      if (!showErrors(validate(7, d))) { toast("Please accept the terms.", true); return; }
+      submitRegistration(d);
+    });
+  }
+}
+
+function submitRegistration(d) {
+  const q = computeQuote(d);
+  const id = demoId();
+  const reg = {
+    id, status: "Submitted", createdAt: new Date().toISOString(),
+    primary: { ...d.primary }, registrationType: d.registrationType,
+    attendees: d.attendees.map(a => ({ ...a })), attendeeCount: d.attendeeCount,
+    packageId: d.packageId, packageName: q.pkg?.name, accommodation: { ...d.accommodation },
+    addOns: { ...d.addOns }, quote: { lines: q.lines, subtotal: q.subtotal, discountTotal: q.discountTotal, tax: q.tax, total: q.total, applied: q.applied },
+    demo: true
+  };
+  DB.state.registrations.push(reg);
+  DB.state.lastRegId = id;
+  DB.state.draft = blankDraft();
+  persist();
+  toast("Demo registration created: " + id);
+  location.hash = "#/register/success";
+}
+
+/* Success page */
+function successPage(reg) {
+  return `
+  <section class="section"><div class="wrap" style="max-width:860px">
+    <div class="no-print" style="margin-bottom:16px"><a href="#/member">Go to member dashboard</a> · <a href="#/register">New registration</a></div>
+    <div class="card" id="printArea">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:flex-start">
+        <div><div class="eyebrow">Registration confirmation</div><h2 style="margin:0">${esc(CONFIG.convention.title)} — ${esc(CONFIG.convention.edition)}</h2></div>
+        <div style="text-align:right"><div style="font-size:.8rem;color:var(--muted)">Demo registration ID</div><div style="font-weight:700;font-size:1.2rem;color:var(--navy);letter-spacing:.04em">${esc(reg.id)}</div></div>
+      </div>
+      <div class="notice" style="margin:16px 0"><strong>Demo Registration — Not a confirmed booking.</strong> No payment has been received and no accommodation has been reserved.</div>
+      <div class="grid g2" style="gap:18px">
+        <div><h3>Registrant</h3><dl class="kv"><dt>Name</dt><dd>${esc(reg.primary.name)}</dd><dt>Email</dt><dd>${esc(reg.primary.email)}</dd><dt>Mobile</dt><dd>${esc(reg.primary.mobile)}</dd><dt>City</dt><dd>${esc(reg.primary.city)}</dd><dt>Affiliation</dt><dd>${esc(reg.primary.affiliation)}</dd></dl></div>
+        <div><h3>Status</h3><p><span class="badge navy">${esc(reg.status)}</span> ${demoTag()}</p><h3 style="margin-top:14px">Package</h3><p>${esc(reg.packageName||"—")}</p></div>
+      </div>
+      <h3 style="margin-top:18px">Attendees</h3>
+      <ol style="margin:0;padding-left:18px">${reg.attendees.map(a=>`<li>${esc(a.name)} <span class="hint">(${esc(a.relation||"—")})</span></li>`).join("")}</ol>
+      <h3 style="margin-top:18px">Price breakdown (sample)</h3>
+      ${priceTable(reg.quote, reg)}
+      <p class="hint" style="margin-top:12px">Created ${new Date(reg.createdAt).toLocaleString("en-IN")}</p>
+    </div>
+    <div class="no-print" style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="window.print()">Print / save as PDF</button>
+      <a class="btn btn-ghost" href="#/member">View in dashboard</a>
+    </div>
+  </div></section>`;
+}
+
+/* =========================================================
+   AUTH — SIMULATED ONLY (client-side, NOT secure)
+   ========================================================= */
+route("/login", () => `
+  <section class="section"><div class="wrap" style="max-width:520px">
+    <div class="eyebrow">Member access</div>
+    <h1 style="font-size:1.8rem">Member login</h1>
+    ${notice("Simulated authentication. Demo accounts only. Passwords are not checked against a server and this is not a secure login.")}
+    <div class="card">
+      <form id="memberLogin" novalidate>
+        <div class="grid" style="gap:14px">
+          <div><label for="ml-id">Email or mobile number <span class="req">*</span></label><input id="ml-id" name="id" autocomplete="username"><div class="err" data-err="id"></div></div>
+          <div><label for="ml-pw">Password <span class="req">*</span></label>
+            <div class="pw-row"><input id="ml-pw" name="pw" type="password" autocomplete="current-password"><button type="button" id="togglePw" aria-controls="ml-pw" aria-label="Show password">Show</button></div>
+            <div class="err" data-err="pw"></div></div>
+          <label class="checkrow" style="font-weight:500"><input type="checkbox" name="remember"> Remember me on this device</label>
+        </div>
+        <div class="form-actions" style="justify-content:space-between">
+          <a href="#/login/forgot" style="font-size:.9rem">Forgot password?</a>
+          <button class="btn btn-primary" type="submit">Sign in (simulated)</button>
+        </div>
+      </form>
+      <div class="notice" style="margin-top:18px;font-size:.88rem">
+        <strong>Demo member account:</strong> <code>${CONFIG.demoAccounts.member.email}</code> / <code>${CONFIG.demoAccounts.member.password}</code>
+        <div style="margin-top:6px">Demo only — not a real credential.</div>
+      </div>
+      <p style="font-size:.92rem;margin:16px 0 0">New to JES Goa? <a href="#/login/request">Request member access (simulated)</a></p>
+      <p style="font-size:.85rem;margin-top:10px;color:var(--muted)">Administrators: <a href="#/admin-login">Admin login (simulated)</a></p>
+    </div>
+  </div></section>`);
+
+route("/login/forgot", () => `
+  <section class="section"><div class="wrap" style="max-width:520px">
+    <h1 style="font-size:1.8rem">Reset password</h1>
+    ${notice("Simulated. No email is sent in this prototype.")}
+    <form id="forgotForm" class="card" novalidate>
+      <label for="fp-email">Email <span class="req">*</span></label><input id="fp-email" type="email"><div class="err" data-err="email"></div>
+      <div class="form-actions"><a href="#/login">Back to login</a><button class="btn btn-primary" type="submit">Send reset link (simulated)</button></div>
+    </form>
+  </div></section>`);
+
+route("/login/request", () => `
+  <section class="section"><div class="wrap" style="max-width:560px">
+    <h1 style="font-size:1.8rem">Request member access</h1>
+    ${notice("Simulated. Requests are stored in this browser only and are not sent to the chapter.")}
+    <form id="requestForm" class="card" novalidate>
+      <div class="form-grid">
+        <div class="full"><label for="rq-name">Full name <span class="req">*</span></label><input id="rq-name"><div class="err" data-err="name"></div></div>
+        <div class="full"><label for="rq-email">Email <span class="req">*</span></label><input id="rq-email" type="email"><div class="err" data-err="email"></div></div>
+        <div class="full"><label for="rq-chapter">Chapter <span class="req">*</span></label><select id="rq-chapter"><option value="">Choose</option><option>JES Goa</option><option>Other chapter</option></select><div class="err" data-err="chapter"></div></div>
+      </div>
+      <div class="form-actions"><a href="#/login">Back to login</a><button class="btn btn-primary" type="submit">Submit request (simulated)</button></div>
+    </form>
+  </div></section>`);
+
+route("/admin-login", () => `
+  <section class="section"><div class="wrap" style="max-width:520px">
+    <div class="eyebrow">Administration</div>
+    <h1 style="font-size:1.8rem">Admin login</h1>
+    ${notice("Simulated administrator sign-in for prototype review. This is not production security. Real admin access requires server-side authentication and authorisation, which is not part of this prototype.")}
+    <div class="card" style="border-top:3px solid var(--navy)">
+      <form id="adminLogin" novalidate>
+        <div class="grid" style="gap:14px">
+          <div><label for="al-id">Admin email <span class="req">*</span></label><input id="al-id" type="email" autocomplete="username"><div class="err" data-err="id"></div></div>
+          <div><label for="al-pw">Password <span class="req">*</span></label><div class="pw-row"><input id="al-pw" type="password" autocomplete="current-password"><button type="button" id="togglePwAdmin" aria-controls="al-pw" aria-label="Show password">Show</button></div><div class="err" data-err="pw"></div></div>
+          <div><label for="al-code">Demo access code <span class="req">*</span></label><input id="al-code" autocomplete="off"><div class="hint">Prototype gate only. Not a secret.</div><div class="err" data-err="code"></div></div>
+        </div>
+        <div class="form-actions" style="justify-content:flex-end"><button class="btn btn-primary" type="submit">Sign in as admin (simulated)</button></div>
+      </form>
+      <div class="notice" style="margin-top:16px;font-size:.88rem"><strong>Demo admin account:</strong> <code>${CONFIG.demoAccounts.admin.email}</code> / <code>${CONFIG.demoAccounts.admin.password}</code> · code <code>DEMO</code></div>
+    </div>
+  </div></section>`);
+
+/* Member dashboard */
+route("/member", () => {
+  const s = DB.state.session;
+  if (!s || s.role !== "member") return `<section class="section"><div class="wrap"><div class="empty">You need to sign in to see the member dashboard. <a href="#/login">Member login (simulated)</a></div></div></section>`;
+  const mine = DB.state.registrations.filter(r => r.primary.email === s.email);
+  const tab = DB.state.memberTab || "overview";
+  const tabs = [["overview","Overview"],["regs","My registrations"],["jpl","My JPL"],["profile","Edit profile"],["announce","Announcements"]];
+  let content = "";
+  if (tab === "overview") {
+    content = `<h2>Welcome, ${esc(CONFIG.demoAccounts.member.name)}</h2>
+      <p class="lede">Sample member portal. Here is a snapshot of your sample activity.</p>
+      <div class="grid g3" style="margin-top:14px">
+        <div class="card kpi"><span class="v">${mine.length}</span><span class="l">Registrations (sample)</span></div>
+        <div class="card kpi"><span class="v">0</span><span class="l">JPL sports joined</span></div>
+        <div class="card kpi"><span class="v">${CONFIG.events.filter(e=>e.status==="upcoming").length}</span><span class="l">Upcoming events</span></div>
+      </div>
+      <h3 style="margin-top:22px">Upcoming activities</h3>
+      <ul class="timeline">${CONFIG.events.filter(e=>e.status==="upcoming").slice(0,3).map(e=>`<li><strong>${fmtDate(e.date)} — ${esc(e.title)}</strong>${esc(e.location)}</li>`).join("")}</ul>`;
+  } else if (tab === "regs") {
+    content = `<h2>My convention registrations</h2>
+      ${mine.length ? `<div class="tbl-wrap"><table class="data"><thead><tr><th>ID</th><th>Package</th><th>Attendees</th><th>Total (demo)</th><th>Status</th></tr></thead><tbody>${mine.map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.packageName||"—")}</td><td>${r.attendeeCount}</td><td>${inr(r.quote.total)}</td><td>${statusBadge(r.status)}</td></tr>`).join("")}</tbody></table></div>` : `<div class="empty">No convention registrations yet. <a href="#/register">Register for the convention</a></div>`}`;
+  } else if (tab === "jpl") {
+    content = `<h2>My JPL participation</h2><div class="empty">You have not joined any JPL sport yet. <a href="#/jpl/register">Register as a player (sample)</a></div>`;
+  } else if (tab === "profile") {
+    content = `<h2>Edit profile</h2>${notice("Changes are saved in this browser only.")}
+      <form id="profileForm" class="card" novalidate><div class="form-grid">
+        <div><label for="pf-name">Full name</label><input id="pf-name" value="${esc(CONFIG.demoAccounts.member.name)}"></div>
+        <div><label for="pf-email">Email</label><input id="pf-email" type="email" value="${esc(CONFIG.demoAccounts.member.email)}"><div class="err" data-err="email"></div></div>
+        <div><label for="pf-chapter">Chapter</label><input id="pf-chapter" value="${esc(CONFIG.demoAccounts.member.chapter)}"></div>
+        <div><label for="pf-city">City</label><input id="pf-city" value="Panaji (sample)"></div>
+      </div><div class="form-actions" style="justify-content:flex-end"><button class="btn btn-primary" type="submit">Save profile (local)</button></div></form>`;
+  } else {
+    content = `<h2>Event announcements</h2><ul class="timeline">${CONFIG.convention.announcements.map(a=>`<li><strong>${esc(a.date)}</strong>${esc(a.text)}</li>`).join("")}</ul>`;
+  }
+  return `<section class="pageHead"><div class="wrap"><div class="eyebrow">Member portal · sample</div><h1>Member dashboard</h1></div></section>
+  <section class="section"><div class="wrap member-shell">
+    <aside class="member-side" aria-label="Member navigation">
+      ${tabs.map(([k,l]) => `<button data-mtab="${k}" class="${k===tab?"active":""}">${l}</button>`).join("")}
+      <button id="logoutBtn" style="color:var(--bad)">Log out</button>
+    </aside>
+    <div class="card">${content}</div>
+  </div></section>`;
+});
+
+function statusBadge(s) {
+  const cls = s === "Confirmed" ? "ok" : s === "Cancelled" ? "bad" : s === "Draft" ? "" : "warn";
+  return `<span class="badge ${cls}">${esc(s)}</span>`;
+}
+
+/* Admin dashboard */
+route("/admin", () => {
+  if (!DB.state.admin) return `<section class="section"><div class="wrap"><div class="empty">Admin access required. <a href="#/admin-login">Admin login (simulated)</a></div></div></section>`;
+  const tab = DB.state.adminTab || "overview";
+  const regs = DB.state.registrations;
+  const pending = regs.filter(r=>r.status==="Submitted").length;
+  const confirmed = regs.filter(r=>r.status==="Confirmed").length;
+  const nav = [["overview","Overview"],["conv","Convention"],["regs","Registrations"],["content","Website content"],["jpl","JPL"],["members","Members"]];
+  let body = "";
+  if (tab === "overview") {
+    body = `<h2>Overview <span class="demo-tag">Demo data</span></h2>
+    <div class="grid g3" style="margin-top:12px">
+      <div class="card kpi"><span class="v">${CONFIG.members.length + 120}</span><span class="l">Total members (demo)</span></div>
+      <div class="card kpi"><span class="v">${regs.length}</span><span class="l">Convention registrations</span></div>
+      <div class="card kpi"><span class="v">${pending}</span><span class="l">Pending</span></div>
+      <div class="card kpi"><span class="v">${confirmed}</span><span class="l">Confirmed</span></div>
+      <div class="card kpi"><span class="v">${CONFIG.events.filter(e=>e.status==="upcoming").length}</span><span class="l">Published events</span></div>
+      <div class="card kpi"><span class="v">24</span><span class="l">JPL participants (demo)</span></div>
+    </div>
+    <p class="hint" style="margin-top:12px">Member and JPL totals are fixed sample figures. Convention counts come from this browser's demo registrations.</p>`;
+  } else if (tab === "conv") {
+    body = `<h2>Convention management</h2>${notice("Changes update the prototype configuration held in this browser for this session. Prices and dates are sample values.")}
+    <div class="card" style="margin-bottom:14px"><h3>Convention details</h3>
+      <div class="form-grid">
+        <div><label for="ac-dates">Dates</label><input id="ac-dates" value="${esc(CONFIG.convention.dates)}"></div>
+        <div><label for="ac-venue">Venue</label><input id="ac-venue" value="${esc(CONFIG.convention.venue)}"></div>
+        <div><label for="ac-open">Registration opens</label><input id="ac-open" value="${esc(CONFIG.convention.registrationOpens)}"></div>
+        <div><label for="ac-close">Registration closes</label><input id="ac-close" value="${esc(CONFIG.convention.registrationCloses)}"></div>
+        <div><label for="ac-status">Status</label><select id="ac-status">${["open","closed","upcoming"].map(s=>`<option ${CONFIG.convention.status===s?"selected":""}>${s}</option>`).join("")}</select></div>
+        <div><label for="ac-cap">Availability limit (sample)</label><input id="ac-cap" type="number" value="${CONFIG.convention.capacity}"></div>
+      </div>
+      <div style="margin-top:12px"><button class="btn btn-primary btn-sm" data-admin-save="convention">Apply changes</button></div>
+    </div>
+    <div class="card"><h3>Packages (sample)</h3>
+      <div class="tbl-wrap"><table class="data"><thead><tr><th>Name</th><th>Price / attendee</th><th>Availability</th><th>Enabled</th></tr></thead><tbody>
+      ${CONFIG.packages.map((p,i)=>`<tr><td><input aria-label="Name for ${esc(p.name)}" value="${esc(p.name)}" data-pk="${i}" data-f="name" style="min-width:180px"></td><td><input type="number" aria-label="Price for ${esc(p.name)}" value="${p.price}" data-pk="${i}" data-f="price" style="width:120px"></td><td><input type="number" aria-label="Availability for ${esc(p.name)}" value="${p.availability}" data-pk="${i}" data-f="availability" style="width:100px"></td><td><input type="checkbox" aria-label="Enable ${esc(p.name)}" data-pk="${i}" data-f="enabled" ${p.enabled?"checked":""}></td></tr>`).join("")}
+      </tbody></table></div>
+      <div style="margin-top:12px"><button class="btn btn-primary btn-sm" data-admin-save="packages">Apply package changes</button></div>
+    </div>`;
+  } else if (tab === "regs") {
+    body = `<h2>Registrations</h2>
+    <div class="toolbar"><input type="search" id="rSearch" placeholder="Search name, email or ID" aria-label="Search registrations">
+      <select id="rStatus" aria-label="Filter status"><option value="">All statuses</option>${["Draft","Submitted","Confirmed","Cancelled"].map(s=>`<option>${s}</option>`).join("")}</select>
+      <button class="btn btn-ghost btn-sm" id="exportCsv">Export sample CSV</button></div>
+    <div id="regTable">${regTableHTML(regs)}</div>`;
+  } else if (tab === "content") {
+    body = `<h2>Website content</h2>${notice("Editing content here is a prototype demonstration only.")}
+      <div class="grid g2">
+        <div class="card"><h3>Homepage announcements</h3><ul class="timeline">${CONFIG.convention.announcements.map(a=>`<li><strong>${esc(a.date)}</strong>${esc(a.text)}</li>`).join("")}</ul></div>
+        <div class="card"><h3>Events (sample)</h3><div class="tbl-wrap"><table class="data"><thead><tr><th>Title</th><th>Status</th><th>Reg. open</th></tr></thead><tbody>${CONFIG.events.map((e,i)=>`<tr><td><input aria-label="Event title ${i+1}" value="${esc(e.title)}" data-ev="${i}" data-f="title" style="min-width:160px"></td><td><select aria-label="Status ${i+1}" data-ev="${i}" data-f="status"><option ${e.status==="upcoming"?"selected":""}>upcoming</option><option ${e.status==="past"?"selected":""}>past</option></select></td><td><input type="checkbox" aria-label="Registration open ${i+1}" data-ev="${i}" data-f="registrationOpen" ${e.registrationOpen?"checked":""}></td></tr>`).join("")}</tbody></table></div><div style="margin-top:10px"><button class="btn btn-primary btn-sm" data-admin-save="events">Apply event changes</button></div></div>
+      </div>
+      <div class="grid g2" style="margin-top:14px">
+        <div class="card"><h3>Committee profiles (placeholders)</h3><ul>${CONFIG.committee.map(c=>`<li>${esc(c.role)} — ${esc(c.name)}</li>`).join("")}</ul></div>
+        <div class="card"><h3>FAQs & contact</h3><p class="hint">Edit FAQs and contact placeholders in configuration.</p></div>
+      </div>`;
+  } else if (tab === "jpl") {
+    body = `<h2>JPL management</h2><p class="lede">Sports, teams, fixtures and results. Sample data.</p>
+      <div class="grid g2"><div class="card"><h3>Sports</h3><ul>${CONFIG.jpl.sports.map(s=>`<li>${s.name} — ${esc(s.format)}</li>`).join("")}</ul></div>
+      <div class="card"><h3>Fixtures & scores</h3><p><a class="btn btn-primary btn-sm" href="#/jpl/admin">Open fixture manager</a></p></div></div>`;
+  } else {
+    body = `<h2>Member management <span class="demo-tag">Sample</span></h2>
+      <div class="toolbar"><input type="search" id="mSearch" placeholder="Search members" aria-label="Search members"></div>
+      <div class="tbl-wrap" id="memberTbl">${memberTableHTML(CONFIG.members)}</div>`;
+  }
+  return `<section class="section" style="padding:0"><div class="admin-shell">
+    <aside class="admin-side" aria-label="Admin navigation">
+      ${nav.map(([k,l])=>`<button data-atab="${k}" class="${k===tab?"active":""}">${l}</button>`).join("")}
+      <button id="adminLogout" style="margin-top:10px">Sign out (simulated)</button>
+      <button id="resetDemo" style="margin-top:6px;color:#f1b8b2">Reset demo data</button>
+    </aside>
+    <div class="admin-main">${body}</div>
+  </div></section>`;
+});
+
+function regTableHTML(list) {
+  if (!list.length) return `<div class="empty">No registrations yet. Submit a demo registration to see it here.</div>`;
+  return `<div class="tbl-wrap"><table class="data"><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Package</th><th>Total (demo)</th><th>Status</th><th>Update</th></tr></thead><tbody>
+  ${list.map(r=>`<tr><td>${esc(r.id)}</td><td>${esc(r.primary.name)}</td><td>${esc(r.primary.email)}</td><td>${esc(r.packageName||"—")}</td><td>${inr(r.quote.total)}</td><td>${statusBadge(r.status)}</td>
+    <td><select aria-label="Status for ${esc(r.id)}" data-rstatus="${esc(r.id)}">${["Draft","Submitted","Confirmed","Cancelled"].map(s=>`<option ${r.status===s?"selected":""}>${s}</option>`).join("")}</select></td></tr>`).join("")}
+  </tbody></table></div>`;
+}
+function memberTableHTML(list) {
+  if (!list.length) return `<div class="empty">No members match.</div>`;
+  return `<table class="data"><thead><tr><th>Name</th><th>Email</th><th>Chapter</th><th>Status</th><th>Registrations</th></tr></thead><tbody>${list.map(m=>`<tr><td>${esc(m.name)}</td><td>${esc(m.email)}</td><td>${esc(m.chapter)}</td><td>${statusBadge(m.status)}</td><td>${DB.state.registrations.filter(r=>r.primary.email===m.email).length}</td></tr>`).join("")}</tbody></table>`;
+}
+
+route("/events/detail", () => "");
+
+/* 404 */
+route("/404", () => `<section class="section"><div class="wrap"><div class="empty">Page not found. <a href="#/">Go home</a></div></div></section>`);
+
+/* Dynamic routes: /events/:id, /jpl/:sport, /convention/* handled above */
+const _baseRender = render;
+render = function () {
+  const path = currentRoute();
+  if (path.startsWith("/events/") && path !== "/events/gallery") {
+    const id = path.split("/")[2];
+    const app = $("#app"); setActiveNav("/events");
+    app.innerHTML = eventDetailRoute(id); bindPage(path); return;
+  }
+  if (path.startsWith("/jpl/") && !["/jpl/register","/jpl/admin"].includes(path)) {
+    const id = path.split("/")[2];
+    const s = CONFIG.jpl.sports.find(x => x.id === id);
+    const app = $("#app"); setActiveNav("/jpl");
+    app.innerHTML = s ? sportPage(s) : `<section class="section"><div class="wrap"><div class="empty">Sport not found. <a href="#/jpl">Back to JPL</a></div></div></section>`;
+    bindPage(path); $("#mainNav").classList.remove("open"); return;
+  }
+  if (path === "/register/success") { $("#app").innerHTML = routes["/register/success"](); return; }
+  _baseRender();
+};
+window.removeEventListener("hashchange", _baseRender);
+window.addEventListener("hashchange", () => render());
+
+function sportPage(s) {
+  const fixtures = CONFIG.jpl.fixtures.filter(f => f.sport === s.id);
+  const rank = CONFIG.jpl.rankings[s.id] || [];
+  return `<section class="pageHead"><div class="wrap">
+    <div class="crumbs"><a href="#/">Home</a> / <a href="#/jpl">JPL</a> / ${s.name}</div>
+    <h1>${s.name}</h1>
+    <p class="lede">${esc(s.description)}</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${s.categories.map(c=>`<span class="badge navy">${esc(c)}</span>`).join("")} ${demoTag()}</div>
+    <nav class="subnav" style="margin-top:16px">${CONFIG.jpl.sports.map(x=>`<a href="#/jpl/${x.id}" class="${x.id===s.id?"active":""}">${x.name}</a>`).join("")}</nav>
+  </div></section>
+  <section class="section"><div class="wrap grid g2" style="align-items:start">
+    <div class="card"><h3>Fixtures & results</h3>${fixtures.length ? `<div class="tbl-wrap">${fixturesTable(fixtures)}</div>` : `<div class="empty">No fixtures yet for this sport.</div>`}</div>
+    <div class="card"><h3>Rankings (sample)</h3>${rank.length ? `<table class="data"><thead><tr><th>Rank</th><th>Player</th><th>Score</th></tr></thead><tbody>${rank.map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r[0])}</td><td>${r[1]}</td></tr>`).join("")}</tbody></table>` : `<div class="empty">No rankings yet.</div>`}</div>
+  </div></section>
+  <section class="section alt"><div class="wrap grid g2">
+    <div class="card"><h3>Team registration</h3><p class="lede" style="font-size:.93rem">Team entries are simulated in this prototype.</p><a class="btn btn-primary btn-sm" href="#/jpl/register">Register (sample)</a></div>
+    <div class="card"><h3>Player registration</h3><p class="lede" style="font-size:.93rem">Individual entry form for ${s.name} (sample).</p><a class="btn btn-ghost btn-sm" href="#/jpl/register">Open form</a></div>
+  </div></section>`;
+}
+
+/* =========================================================
+   PAGE BINDINGS
+   ========================================================= */
+function bindPage(path) {
+  // Wizard
+  if (path === "/register") { bindWizard(); }
+
+  // Events filters
+  if (path === "/events") {
+    const apply = () => {
+      const q = ($("#evSearch").value || "").toLowerCase();
+      const cat = $("#evCat").value; const st = $("#evStatus").value;
+      const list = CONFIG.events.filter(e =>
+        (!q || (e.title + " " + e.desc + " " + e.location).toLowerCase().includes(q)) &&
+        (!cat || e.category === cat) && (!st || e.status === st));
+      $("#evList").innerHTML = list.length ? list.map(eventCard).join("") : `<div class="empty" style="grid-column:1/-1">No events match these filters.</div>`;
+    };
+    ["evSearch","evCat","evStatus"].forEach(id => $("#" + id).addEventListener("input", apply));
+    ["evCat","evStatus"].forEach(id => $("#" + id).addEventListener("change", apply));
+  }
+
+  // Event register interest
+  document.querySelectorAll("[data-event-reg]").forEach(b => b.addEventListener("click", () => toast("Interest recorded locally (simulated).")));
+
+  // Gallery
+  if (path.startsWith("/about/gallery") || path === "/events/gallery") {
+    document.querySelectorAll("[data-gcat]").forEach(b => b.addEventListener("click", () => {
+      const cat = b.dataset.gcat;
+      document.querySelectorAll("[data-gcat]").forEach(x => x.classList.toggle("active", x === b));
+      document.querySelectorAll("#gGrid [data-gc]").forEach(el => el.style.display = (!cat || el.dataset.gc === cat) ? "" : "none");
+    }));
+    document.querySelectorAll("[data-lb]").forEach(el => el.addEventListener("click", () => openLightbox(CONFIG.gallery[Number(el.dataset.lb)])));
+  }
+
+  // Contact form
+  const cf = $("#contactForm");
+  if (cf) cf.addEventListener("submit", e => {
+    e.preventDefault();
+    const v = { name: cf.name.value.trim(), email: cf.email.value.trim(), subject: cf.subject.value, message: cf.message.value.trim() };
+    const errs = {};
+    if (v.name.length < 2) errs.name = "Enter your name.";
+    if (!isEmail(v.email)) errs.email = "Enter a valid email.";
+    if (!v.subject) errs.subject = "Choose a subject.";
+    if (v.message.length < 10) errs.message = "Message should be at least 10 characters.";
+    if (showErrors(errs)) {
+      DB.state.contacts.push({ ...v, at: new Date().toISOString(), simulated: true }); persist();
+      cf.reset(); document.querySelectorAll("[aria-invalid]").forEach(el=>el.removeAttribute("aria-invalid"));
+      toast("Message simulated — not actually sent.");
+    } else toast("Please fix the highlighted fields.", true);
+  });
+
+  // JPL register
+  const jr = $("#jplRegForm");
+  if (jr) {
+    jr.sport.addEventListener("change", () => {
+      const s = CONFIG.jpl.sports.find(x => x.id === jr.sport.value);
+      jr.category.innerHTML = s ? `<option value="">Choose category</option>${s.categories.map(c=>`<option>${esc(c)}</option>`).join("")}` : `<option value="">Choose sport first</option>`;
+    });
+    jr.addEventListener("submit", e => {
+      e.preventDefault();
+      const errs = {};
+      if (!jr.name.value.trim()) errs.name = "Enter your name.";
+      if (!isEmail(jr.email.value)) errs.email = "Enter a valid email.";
+      if (!jr.sport.value) errs.sport = "Choose a sport.";
+      if (!jr.category.value) errs.category = "Choose a category.";
+      if (!jr.consent.checked) errs.consent = "Please accept to continue.";
+      if (showErrors(errs)) { toast("Player registration simulated."); jr.reset(); document.querySelectorAll("[aria-invalid]").forEach(el=>el.removeAttribute("aria-invalid")); }
+      else toast("Please fix the highlighted fields.", true);
+    });
+  }
+
+  // JPL admin fixtures save
+  document.querySelectorAll("[data-save-fix]").forEach(b => b.addEventListener("click", () => {
+    const i = Number(b.dataset.saveFix);
+    const inp = document.querySelector(`[data-fix="${i}"]`);
+    CONFIG.jpl.fixtures[i].result = inp.value.trim() || null;
+    toast("Result saved for this session (sample).");
+  }));
+
+  // Member login
+  const ml = $("#memberLogin");
+  if (ml) {
+    $("#togglePw").addEventListener("click", e => {
+      const pw = $("#ml-pw"); const show = pw.type === "password";
+      pw.type = show ? "text" : "password"; e.target.textContent = show ? "Hide" : "Show"; e.target.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    });
+    ml.addEventListener("submit", e => {
+      e.preventDefault();
+      const id = ml.id.value.trim(), pw = ml.pw.value;
+      const errs = {};
+      if (!id) errs.id = "Enter your email or mobile number.";
+      if (!pw) errs.pw = "Enter your password.";
+      if (Object.keys(errs).length) { showErrors(errs); return; }
+      const m = CONFIG.demoAccounts.member;
+      if (id.toLowerCase() === m.email && pw === m.password) {
+        DB.state.session = { role: "member", email: m.email, name: m.name }; persist();
+        toast("Signed in (simulated). Welcome back.");
+        location.hash = "#/member";
+      } else {
+        showErrors({ pw: "Email/mobile or password does not match a demo account." });
+        toast("Sign-in failed (simulated).", true);
+      }
+    });
+  }
+  const fp = $("#forgotForm");
+  if (fp) fp.addEventListener("submit", e => { e.preventDefault(); if (!isEmail(fp["fp-email"].value)) { showErrors({ email: "Enter a valid email." }); return; } toast("Reset link simulated — no email sent."); });
+  const rq = $("#requestForm");
+  if (rq) rq.addEventListener("submit", e => { e.preventDefault(); toast("Request simulated — not sent."); });
+
+  // Admin login
+  const al = $("#adminLogin");
+  if (al) {
+    $("#togglePwAdmin").addEventListener("click", e => { const pw = $("#al-pw"); const show = pw.type === "password"; pw.type = show ? "text" : "password"; e.target.textContent = show ? "Hide" : "Show"; });
+    al.addEventListener("submit", e => {
+      e.preventDefault();
+      const id = al.id.value.trim(), pw = al.pw.value, code = al.code.value.trim();
+      const a = CONFIG.demoAccounts.admin;
+      const errs = {};
+      if (!isEmail(id)) errs.id = "Enter a valid admin email.";
+      if (!pw) errs.pw = "Enter your password.";
+      if (!code) errs.code = "Enter the demo access code.";
+      if (Object.keys(errs).length) { showErrors(errs); return; }
+      if (id.toLowerCase() === a.email && pw === a.password && code === "DEMO") {
+        DB.state.admin = { name: a.name, role: a.role }; persist();
+        toast("Admin signed in (simulated).");
+        location.hash = "#/admin";
+      } else {
+        showErrors({ pw: "Credentials do not match the demo admin account." });
+        toast("Admin sign-in failed (simulated).", true);
+      }
+    });
+  }
+
+  // Member dashboard tabs & logout
+  document.querySelectorAll("[data-mtab]").forEach(b => b.addEventListener("click", () => { DB.state.memberTab = b.dataset.mtab; persist(); render(); }));
+  $("#logoutBtn")?.addEventListener("click", () => { DB.state.session = null; persist(); toast("Signed out."); location.hash = "#/"; });
+  const pf = $("#profileForm");
+  if (pf) pf.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!isEmail(pf["pf-email"].value)) { showErrors({ email: "Enter a valid email." }); return; }
+    toast("Profile saved locally (simulated).");
+  });
+
+  // Admin
+  document.querySelectorAll("[data-atab]").forEach(b => b.addEventListener("click", () => { DB.state.adminTab = b.dataset.atab; persist(); render(); }));
+  $("#adminLogout")?.addEventListener("click", () => { DB.state.admin = null; persist(); toast("Signed out (simulated)."); location.hash = "#/"; });
+  $("#resetDemo")?.addEventListener("click", () => {
+    if (!confirm("Reset all demo data in this browser? Registrations and drafts will be cleared.")) return;
+    DB.reset(); toast("Demo data reset."); location.hash = "#/";
+  });
+  document.querySelectorAll("[data-rstatus]").forEach(sel => sel.addEventListener("change", () => {
+    const r = DB.state.registrations.find(x => x.id === sel.dataset.rstatus);
+    if (r) { r.status = sel.value; persist(); toast(`Status updated to ${sel.value} (demo).`); render(); }
+  }));
+  if ($("#rSearch")) {
+    const apply = () => {
+      const q = $("#rSearch").value.toLowerCase(), st = $("#rStatus").value;
+      const list = DB.state.registrations.filter(r => (!q || (r.id+r.primary.name+r.primary.email).toLowerCase().includes(q)) && (!st || r.status === st));
+      $("#regTable").innerHTML = regTableHTML(list);
+      bindPage("/admin");
+    };
+    $("#rSearch").addEventListener("input", apply);
+    $("#rStatus").addEventListener("change", apply);
+    $("#exportCsv")?.addEventListener("click", () => {
+      const rows = [["ID","Name","Email","Package","Total_demo_INR","Status"], ...DB.state.registrations.map(r=>[r.id,r.primary.name,r.primary.email,r.packageName||"",r.quote.total,r.status])];
+      const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type:"text/csv"})); a.download = "jes-demo-registrations.csv"; a.click();
+      toast("CSV exported (sample data).");
+    });
+  }
+  document.querySelectorAll("[data-admin-save]").forEach(b => b.addEventListener("click", () => {
+    const what = b.dataset.adminSave;
+    if (what === "convention") {
+      CONFIG.convention.dates = $("#ac-dates").value;
+      CONFIG.convention.venue = $("#ac-venue").value;
+      CONFIG.convention.registrationOpens = $("#ac-open").value;
+      CONFIG.convention.registrationCloses = $("#ac-close").value;
+      CONFIG.convention.status = $("#ac-status").value;
+      CONFIG.convention.capacity = Number($("#ac-cap").value) || 0;
+      toast("Convention details updated for this session (sample).");
+    }
+    if (what === "packages") {
+      document.querySelectorAll("[data-pk]").forEach(inp => {
+        const p = CONFIG.packages[Number(inp.dataset.pk)], f = inp.dataset.f;
+        if (f === "enabled") p.enabled = inp.checked;
+        else if (f === "price") p.price = Math.max(0, Number(inp.value) || 0);
+        else if (f === "availability") p.availability = Math.max(0, Number(inp.value) || 0);
+        else p[f] = inp.value;
+      });
+      toast("Package changes applied for this session (sample).");
+    }
+    if (what === "events") {
+      document.querySelectorAll("[data-ev]").forEach(inp => {
+        const e = CONFIG.events[Number(inp.dataset.ev)], f = inp.dataset.f;
+        e[f] = inp.type === "checkbox" ? inp.checked : inp.value;
+      });
+      toast("Event changes applied for this session (sample).");
+    }
+  }));
+  if ($("#mSearch")) {
+    $("#mSearch").addEventListener("input", () => {
+      const q = $("#mSearch").value.toLowerCase();
+      $("#memberTbl").innerHTML = memberTableHTML(CONFIG.members.filter(m => (m.name+m.email+m.chapter).toLowerCase().includes(q)));
+    });
+  }
+
+  // Success-page print button needs no binding; "Start" links are plain anchors.
+}
+
+/* Lightbox */
+function openLightbox(item) {
+  const o = $("#overlay");
+  o.innerHTML = `<div class="lightbox-bg" role="dialog" aria-modal="true" aria-label="Image preview (placeholder)" tabindex="-1"><div>${ph(item.caption)}<p style="color:#fff;text-align:center;margin-top:10px;font-size:.9rem">Placeholder image — ${esc(item.cat)}. Press Esc to close.</p></div></div>`;
+  const close = () => { o.innerHTML = ""; document.removeEventListener("keydown", k); };
+  const k = e => { if (e.key === "Escape") close(); };
+  o.querySelector(".lightbox-bg").addEventListener("click", close);
+  document.addEventListener("keydown", k);
+  o.querySelector(".lightbox-bg").focus();
+}
+
+/* Global: admin "Reset" in wizard handled; simple global click for CTA logging none */
+</script>
+</body>
+</html>
